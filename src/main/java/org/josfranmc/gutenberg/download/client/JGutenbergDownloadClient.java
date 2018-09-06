@@ -35,7 +35,10 @@ public class JGutenbergDownloadClient {
 
 		if (readParameters(args)) {
 			jg = JGutenbergDownloadFactory.create();
+			
+			fileType = (fileType == null) ? "txt" : fileType;
 			jg.setFileType(fileType);
+			language = (language == null) ? "en" : language;
 			jg.setLanguage(language);
 			jg.setSavePath(params.getSavePath());
 			jg.setOverwrite(params.isOverwrite());
@@ -46,6 +49,7 @@ public class JGutenbergDownloadClient {
 			if (downloadMode != null) {
 				jg.setDownloadMode(downloadMode);
 			}
+			
 			jg.downloadBooks();
 		}
 		System.exit(0);
@@ -107,15 +111,14 @@ public class JGutenbergDownloadClient {
 
 	private static void showHelp() {
 		System.out.println("Opciones:");
-		System.out.println("   [-t tipo_fichero, por defecto txt]");
-		System.out.println("   [-i idioma, por defecto en]");
-		System.out.println("   [-d tiempo de espera en milisegundos, por defecto 2000]");
-		System.out.println("   [-s ruta descarga]");
-		System.out.println("   [-m total ficheros a descargar]");
-		System.out.println("   [-z descomprimir (true/false), por defecto true]");
-		System.out.println("   [-o sobreescribir existentes (true/false), por defecto false]");
-		System.out.println("   [-e tipo motor de descarga]");
-		System.out.println("   [-x modo de descarga, por defecto SOFT]");
+		System.out.println("   -t tipo_fichero (por defecto txt)");
+		System.out.println("   -i idioma (por defecto en)");
+		System.out.println("   -d tiempo de espera en milisegundos (por defecto 2000)");
+		System.out.println("   -s ruta donde depositar las descargas");
+		System.out.println("   -m total ficheros a descargar (por defecto 10, el valor 0 descarga todo)");
+		System.out.println("   -z descomprimir (true/false, por defecto true)");
+		System.out.println("   -o sobreescribir existentes (true/false, por defecto false)");
+		System.out.println("   -x modo de descarga (SOFT/GREEDY, por defecto SOFT)");
 		System.out.println("");
 		System.out.println("(indicar solo -h para mostrar lista de opciones)");
 		System.out.println("");
