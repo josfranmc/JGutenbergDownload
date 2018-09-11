@@ -55,6 +55,7 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 	 * Crea una instancia DownloadHttpUrlConnection de tipo IDownloadEngine. 
 	 * @param target direccion URL del recurso a descargar
 	 * @param savePath ruta de la carpeta en la qu obtener la descarga
+	 * @return una instancia de tipo IDownloadEngine
 	 * @see IDownloadEngine
 	 */
 	public static IDownloadEngine newInstance(URL target, String savePath) {
@@ -148,7 +149,7 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 
 	/**
 	 * Establece la dirección del recurso a descargar, la cual se maneja como un objeto de tipo URL
-	 * @param resource 
+	 * @param resource dirección url
 	 */
 	@Override
 	public void setResource(URL resource) {

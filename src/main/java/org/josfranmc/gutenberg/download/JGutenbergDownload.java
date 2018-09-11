@@ -70,7 +70,7 @@ public class JGutenbergDownload implements IGutenbergDownload{
 	 * <li>Se establece que se descompriman los ficheros zips descargados</li>
 	 * <li>Se indica que se utilice un motor de descarga del tipo <i>DownloadEngineType.HTTP_CONNECTION</i></li>
 	 * <li>Se indica que las descargas se realicen usando un modo <i>DownloadMode.SOFT</i></li>
-	 * <li>Se indica que se descarguen todos los ficheros disponibles</i></li>
+	 * <li>Se indica que se descarguen todos los ficheros disponibles</li>
 	 * </ul>
 	 * @see DownloadParams
 	 * @see DownloadEngineType
@@ -93,7 +93,7 @@ public class JGutenbergDownload implements IGutenbergDownload{
 	 * 
 	 * Se comprueba si se ha indicado el tipo de ficheros a descargar y el idioma de los mismos. 
 	 * Si no se se han indicado no se puede realizar la descarga.
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException si no se ha indicado tipo de fichero e idioma
 	 */
 	@Override
 	public void downloadBooks() {
@@ -241,7 +241,7 @@ public class JGutenbergDownload implements IGutenbergDownload{
 	 * Establece la ruta de la carpeta en la que guardar los archivos descargados. Se añade el caracter separador de directorios a la final de la
 	 * ruta en caso de que no lo lleve.<br>Esta ruta se añade a los parámetros de la aplicación y se establece como ruta raiz del proceso.
 	 * @param savePath ruta de la carpeta
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException ruta errónea
 	 */
 	@Override
 	public void setSavePath(String savePath) {
@@ -315,7 +315,7 @@ public class JGutenbergDownload implements IGutenbergDownload{
 	/**
 	 * Establece el número máximo de ficheros a descargar
 	 * @param maxFilesToDownload número máximo de ficheros
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException si se indica un número inferior a cero
 	 */
 	@Override
 	public void setMaxFilesToDownload(int maxFilesToDownload) {
