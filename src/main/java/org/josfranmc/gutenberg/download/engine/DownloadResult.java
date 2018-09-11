@@ -81,7 +81,7 @@ public class DownloadResult {
 	}
 
 	/**
-	 * Establece la ruta del fichero descargado
+	 * Establece la ruta del fichero descargado.
 	 * @param fileOutputPath ruta del fichero descargado
 	 */
 	public void setFileOutputPath(String fileOutputPath) {
@@ -103,8 +103,8 @@ public class DownloadResult {
 	}
 
 	/**
-	 * Establece un mensaje de error
-	 * @param error
+	 * Establece un mensaje de error.
+	 * @param error mensaje
 	 */
 	public void setError(String error) {
 		this.error = error;

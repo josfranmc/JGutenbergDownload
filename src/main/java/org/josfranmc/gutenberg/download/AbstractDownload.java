@@ -67,7 +67,7 @@ public abstract class AbstractDownload {
 	 * para realizar la descarga de los recursos que se referencian.
 	 * @param downloadParams parámetros de configuración de la descarga
 	 * @see DownloadParams
-	 * @throws IllegalStateException
+	 * @throws IllegalStateException si se ha devuelto algún error al hacer las descargas
 	 */
 	public void executeDownload(DownloadParams downloadParams) {
 		configDownload(downloadParams);

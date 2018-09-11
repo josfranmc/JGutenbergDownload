@@ -39,7 +39,7 @@ public class FileManager {
 	 * Devuelve la ruta que debe tener en el equipo local un fichero que va a descargarse en dicho equipo.<br>
 	 * La ruta completa del fichero se forma concatenando dos elementos: por un lado, la ruta de la carpeta donde se va a guardar, y por otro,
 	 * el nombre del fichero contenido en el enlace de descarga (el nombre de fichero es la parte final del enlace desde el último caracter separador de directorios)<br>.
-	 * Si el nombre del fichero contiene los caracteres ? o &amp;amp; se sustituyen por _ y & respectivamente.
+	 * Si el nombre del fichero contiene los caracteres ? o &amp;amp; se sustituyen por _ y &amp; respectivamente.
 	 * @param savePath ruta de la carpeta en la que obtener la descarga
 	 * @param link enlace del fichero a descargar
 	 * @return la ruta del fichero en el equipo local
