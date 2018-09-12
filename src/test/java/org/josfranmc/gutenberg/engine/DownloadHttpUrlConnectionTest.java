@@ -12,49 +12,10 @@ import java.net.URL;
 import org.josfranmc.gutenberg.download.engine.DownloadHttpUrlConnection;
 import org.josfranmc.gutenberg.download.engine.DownloadResult;
 import org.josfranmc.gutenberg.download.engine.IDownloadEngine;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DownloadHttpUrlConnectionTest {
 
-	/**
-	 * Método ejecutado una vez antes de la ejecución de todos los tests
-	 */
-	@BeforeClass 
-	public static void setUp() {
-
-	    //log.info();
-	}
-	 
-	/**
-	 * Método ejecutado antes de la ejecución de cada test
-	 */
-	@Before
-	public void init() {
-
-	}
-	
-	/**
-	 * Método ejecutado después de la ejecución de cada test
-	 */
-	@After
-	public void tearDown() {
-
-	}
-	 
-	/**
-	 * Método ejecutado una vez después de la ejecución de todos los tests
-	 */
-	@AfterClass
-	public static void done() {
-
-	}
-	
-
-	// Given[ExplainYourInput]When[WhatIsDone]Then[ExpectedResult] patrón BDD
 	/**
 	 * Si la ruta donde guardar las descargas no se ha especificado, entonces la carpeta de descarga debe ser la carpeta de ejecución del programa.
 	 */

@@ -25,13 +25,15 @@ public class FileManagerTest {
 	 */
 	@Test
 	public void testGetLocalFileName() {
-		String file = FileManager.getLocalFileName("C:\\text\\book.txt");
+		String testCad = "test" + System.getProperty("file.separator") + "book.txt";
+		String file = FileManager.getLocalFileName(testCad);
 		String expected = "book.txt";
 		assertEquals("Ruta inválida", expected, file);
 		
-		file = FileManager.getLocalFileName("C:\\text\\book?one&amp;two.txt");
+		testCad = "test" + System.getProperty("file.separator") + "book?one&amp;two.txt";
+		file = FileManager.getLocalFileName(testCad);
 		expected = "book_one&two.txt";
-		assertEquals("Ruta inválida", expected, file);		
+		assertEquals("Ruta inválida", expected, file);
 	}
 	
 	/**
@@ -46,5 +48,4 @@ public class FileManagerTest {
 			fail("Las rutas de los directorios son null");
 		}
 	}
-	
 }

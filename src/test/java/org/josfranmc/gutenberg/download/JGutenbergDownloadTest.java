@@ -1,6 +1,9 @@
 package org.josfranmc.gutenberg.download;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
 import org.junit.Test;
@@ -57,12 +60,15 @@ public class JGutenbergDownloadTest {
 	}
 	
 	/**
-	 * Si la ruta indicada para guardar las descargas no existe, entonces lanzar excepción IllegalArgumentException
+	 * Si la ruta indicada para guardar las descargas no existe, entonces crear nuevos directorios
 	 */
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void givenSavePathWhenNoExistsThenIllegalArgumentException() {
 		IGutenbergDownload jg = JGutenbergDownloadFactory.create();
-		jg.setSavePath("C:\\xopakeuj\\sfukeo");
+		jg.setSavePath("xopakeuj/sfukeo");
+		File file = new File("xopakeuj/sfukeo");
+		assertTrue("No existe directorio", file.exists());
+		file.delete();
 	}
 	
 	/**

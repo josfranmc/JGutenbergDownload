@@ -250,8 +250,13 @@ public class JGutenbergDownload implements IGutenbergDownload{
 		}
 		File f = new File(savePath);
 		if (!f.exists()) {
-			throw new IllegalArgumentException("Ruta donde guardar las descargas inexistente");
+			log.warn("Ruta donde guardar las descargas inexistente. Creando nuevo directorio.");
+			f.mkdirs();
+			if (!f.exists()) {
+				throw new IllegalArgumentException("Imposible crear direcotrio para descargas");
+			}
 		}
+
 		String fileSeparator = System.getProperty("file.separator");
 		String path = (!savePath.endsWith(fileSeparator)) ? savePath.concat(fileSeparator) : savePath;
 		setSavePathParam(path);
