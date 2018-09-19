@@ -25,5 +25,7 @@ opciones:
 
 -h muestra lista de opciones
 
-Nota:  
+## Notas  
 Si se usa el jar flat hay que asegurarse que exista la carpeta lib dentro de la carpeta desde la que ejecutemos la aplicación.
+
+El fichero de log generado se guarda en la carpeta log.
