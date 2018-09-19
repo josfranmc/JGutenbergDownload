@@ -63,6 +63,7 @@ public class DownloadHttpUrlConnectionTest {
 			DownloadHttpUrlConnection.newInstance(url, null).download();
 			File f = new File(System.getProperty("user.dir").concat(System.getProperty("file.separator")).concat("10002.zip"));
 			assertTrue("No se ha obtenido el recursos en la carpeta esperada", f.exists());
+			f.delete();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
