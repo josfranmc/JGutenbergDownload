@@ -69,6 +69,8 @@ public class JGutenbergDownloadTest {
 		File file = new File("xopakeuj/sfukeo");
 		assertTrue("No existe directorio", file.exists());
 		file.delete();
+		file = new File("xopakeuj");
+		file.delete();
 	}
 	
 	/**
