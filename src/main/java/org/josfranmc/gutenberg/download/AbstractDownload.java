@@ -116,8 +116,6 @@ public abstract class AbstractDownload {
 		boolean result = false;
 		if (!resourceAlreadyDownloaded(link) || link.contains("harvest") || isOverwrite()) {
 			result = true;
-		} else {
-			result = false;
 		}
 		return result;
 	}	
