@@ -2,43 +2,45 @@ package org.josfranmc.gutenberg.download.engine;
 
 import java.net.URL;
 
+import org.josfranmc.gutenberg.util.GutenbergException;
+
 /**
- * Define el comportamiento que tiene que ofrecer toda clase que quiera implementar la capacidad de descargar
- * un recurso identificado por una URL
- * 
+ * Defines the behavior that a class have to implement in order to have the ability to download resources on net.
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
+ * @see IDownloadEngine
+ * @see GutenbergException
  */
 public interface IDownloadEngine {
 
 	/**
-	 * Ejecuta el proceso de descarga.
-	 * @return el resultado de la descarga encapsulado en un objeto de tipo DownloadResult
+	 * Runs a download.
+	 * @return the result of the download in the form of a DownloadResult object
+	 * @throws GutenbergException if there is any error downloading
 	 * @see DownloadResult
+	 * @see GutenbergException
 	 */
-	public DownloadResult download();
+	public DownloadResult download() throws GutenbergException;
 	
 	/**
-	 * Establece la dirección del recurso a descargar, la cual se maneja como un objeto de tipo URL
-	 * @param resource dirección del recurso que se quiere obtener
+	 * Sets the resource of the url to download, in the form of a URL object
+	 * @param resource url address
 	 */
 	public void setResource(URL resource);
     
 	/**
-	 * Obtiene la dirección del recurso a descargar como un objeto de tipo URL
-	 * @return dirección del recurso a descargar
+	 * @return the resource of the url to download, in the form of a URL object
 	 */
 	public URL getResource();
 
 	/**
-	 * Establece la ruta donde guardar el recurso a descargar
-	 * @param savePath ruta donde guardar
+	 * Sets the local path where to save the resource to be download
+	 * @param savePath local path
 	 */
 	public void setSavePath(String savePath); 
 	
 	/**
-	 * Obtiene la ruta donde guardar el recursos a descargar
-	 * @return ruta donde guardar
+	 * @return the local path where to save the resource to be download
 	 */
 	public String getSavePath();
 
