@@ -1,7 +1,6 @@
 package org.josfranmc.gutenberg.download.engine;
 
 import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,39 +11,36 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
+import org.josfranmc.gutenberg.util.GutenbergException;
 import org.josfranmc.gutenberg.util.FileManager;
 
 /**
- * Permite realizar la descarga de un recurso identificado por una URL. Para ello se hace uso de la clase <i>java.net.HttpURLConnection</i>.<br>
- * El recurso descargado se guarda en la ruta que ha debido establecerse previamente a la descarga.
+ * Allows to download a resource identified by an url and save it in a local folder.<br>
+ * It makes use of the <code>java.net.HttpURLConnection</code> class for downloading.<br>
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
  * @see IDownloadEngine
+ * @see GutenbergException
  */
 public class DownloadHttpUrlConnection implements IDownloadEngine {
 	
 	private static final Logger log = Logger.getLogger(DownloadHttpUrlConnection.class);
 	
 	/**
-	 * Dirección URL del recurso a descargar
+	 * the url of the resource to download
 	 */
 	private URL resource;
 	
 	/**
-	 * Ruta de la carpeta en la que obtener el recurso descargado
+	 * local path where to save the resource to be download
 	 */
 	private String savePath;
 
-	/**
-	 * Conexión establecida
-	 */
-	private HttpURLConnection httpConnection = null;
-
     
 	/**
-	 * Constructor. Incializa el objeto con la dirección URL de un recurso a descargar y la ruta de la carpeta donde obtenerlo.
-	 * @param target direccion URL del recurso a descargar
-	 * @param savePath ruta de la carpeta en la qu obtener la descarga
+	 * Initializes an object with the url of the resource to download and the path where to save it
+	 * @param target resource url to download
+	 * @param savePath path where to save the download
 	 */
 	private DownloadHttpUrlConnection(URL target, String savePath) {
     	setSavePath(savePath);
@@ -52,10 +48,10 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
     }
 	
 	/**
-	 * Crea una instancia DownloadHttpUrlConnection de tipo IDownloadEngine. 
-	 * @param target direccion URL del recurso a descargar
-	 * @param savePath ruta de la carpeta en la qu obtener la descarga
-	 * @return una instancia de tipo IDownloadEngine
+	 * Creates a <code>DownloadHttpUrlConnection</code> object which is an <code>IDownloadEngine</code> type instance.
+	 * @param target resource url to download
+	 * @param savePath path where to save the download
+	 * @return an <code>IDownloadEngine</code> instance in the form of a <code>DownloadHttpUrlConnection</code>
 	 * @see IDownloadEngine
 	 */
 	public static IDownloadEngine newInstance(URL target, String savePath) {
@@ -63,9 +59,10 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 	}
 	
 	/**
-	 * Configura los valores de la cabecera que se va a enviar en la petición.
+	 * Sets up the header values that will be sended along with the request.
+	 * @throws ProtocolException
 	 */
-	private void configHeader() throws ProtocolException {
+	private void configHeader(HttpURLConnection httpConnection) throws ProtocolException {
 		httpConnection.setRequestMethod("GET");
 		httpConnection.setRequestProperty("Content-Type", "");
 		httpConnection.setRequestProperty("Host", getResource().getHost());
@@ -80,76 +77,69 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 	}
 	
 	/**
-	 * Ejecuta el proceso de descarga. Previamente se ha debido indicar la dirección del recurso a descargar y la ruta de la carpeta en la que obtenerlo.<br>
-	 * Si la descarga es correcta, se obtiene en la carpeta indicada un nuevo fichero cuyo nombre es el nombre delfichero contenido en el enlace de descarga
-	 * (se toma desde el último caracter separador de directorios)
-	 * @return el resultado de la descarga encapsulado en un objeto de tipo DownloadResult
+	 * Runs a download.<p>
+	 * Previously, it has been necessary to indicate the url address of the resource to download and the path of the folder in which to save it.<br>
+     * If the download is correct a new file in the indicated folder is obtained. The file name is extracted from download link,
+     * beginning from the last directory separator character.
+	 * @return the result of the download in the form of a DownloadResult object
+	 * @throws GutenbergException if there is any error downloading
 	 * @see DownloadResult
+	 * @see GutenbergException
 	 */
 	@Override
-	public DownloadResult download() {
+	public DownloadResult download() throws GutenbergException {
 		DownloadResult downloadResult = new DownloadResult();
 		if (getResource() != null && getSavePath() != null) {
-			BufferedOutputStream  fileOutputStream = null;
+			BufferedOutputStream  outputFileStream = null;
+			HttpURLConnection httpConnection = null;
 			try {
-				httpConnection = (HttpURLConnection) getResource().openConnection();
-				configHeader();
-	            InputStream inputStream  = null;
 	            int offset = 0;
 	            final byte[] buffer = new byte[2048];
 	        	int read = 0;
-	    		
-	    		String fileOutputPath = FileManager.getLocalFilePathFromURL(getSavePath(), getResource().toString());
-	            inputStream = httpConnection.getInputStream();
-	        	fileOutputStream = new BufferedOutputStream (new FileOutputStream(fileOutputPath));
+	        	
+	        	httpConnection = (HttpURLConnection) getResource().openConnection();
+				configHeader(httpConnection);
+				
+	    		String outputFilePath = FileManager.getLocalFilePathFromURL(getSavePath(), getResource().toString());
+	    		InputStream inputStream = httpConnection.getInputStream();
+	        	outputFileStream = new BufferedOutputStream (new FileOutputStream(outputFilePath));
 
-	            log.debug("Download Desde: " + this.resource);
-	            
 	            while ((read = inputStream.read(buffer)) >= 0) {
-	                fileOutputStream.write(buffer, offset, read);
-	                fileOutputStream.flush();
+	                outputFileStream.write(buffer, offset, read);
+	                outputFileStream.flush();
 	            }
 	            
 			    downloadResult.setHeaders(httpConnection);
-				downloadResult.setFileOutputPath(fileOutputPath);	            
+				downloadResult.setSavedFilePath(outputFilePath);	            
 	            
-				log.debug("Descargado \"" + FileManager.getLocalFileName(fileOutputPath) + "\" en " + getSavePath());
+				log.debug("Descargado \"" + FileManager.getLocalFileName(outputFilePath) + "\" en " + getSavePath());
 				log.debug("Tipo: " + downloadResult.getContentType() + "  Longitud: " + downloadResult.getContentLength());
 
 	        } catch (ConnectException e) {
-	        	log.error("Tiempo de espera superado");
-	        	downloadResult.setFileOutputPath(null);
+	        	log.warn("Download timeout exceeded");
 	        } catch (UnknownHostException e) {
-	        	log.error("No puede obtenerse dirección IP del recurso a descarga");
-	        	downloadResult.setFileOutputPath(null);
-	        	downloadResult.setError("No puede obtenerse dirección IP del recurso a descarga");
-	        } catch (FileNotFoundException e) {
-	        	log.error("Recurso desconocido... " + getResource().toString());
-	        	downloadResult.setFileOutputPath(null);
-	        	downloadResult.setError("Recurso desconocido... " + getResource().toString());
+	        	throw new GutenbergException("UnknownHostException", e);
 			} catch (IOException e) {
-	        	log.error("Error download " + resource.toString());
-	        	downloadResult.setError("Error download " + resource.toString());
+	        	throw new GutenbergException("IOException", e);
 			} finally {
 				httpConnection.disconnect();
-			    if (fileOutputStream != null) {
+			    if (outputFileStream != null) {
 					try {
-						fileOutputStream.close();
+						outputFileStream.close();
 					} catch (IOException e) {
-						e.printStackTrace();
-						System.exit(0);
+						throw new GutenbergException("Error closing outputFileStream", e);
 					}
 				}
 			}
 		} else {
-			log.warn("DOWNLOAD Debe indicarse recurso y ruta donde obtener la descarga");
+			log.warn("DOWNLOAD It must be indicated resource and route where to obtain the download");
 		}
 		return downloadResult;
 	}
 
 	/**
-	 * Establece la dirección del recurso a descargar, la cual se maneja como un objeto de tipo URL
-	 * @param resource dirección url
+	 * Sets the resource of the url to download, in the form of a URL object
+	 * @param resource url address
 	 */
 	@Override
 	public void setResource(URL resource) {
@@ -157,8 +147,7 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 	}
 
 	/**
-	 * Obtiene la dirección del recurso a descargar como un objeto de tipo URL
-	 * @return dirección del recurso a descargar
+	 * @return the resource of the url to download, in the form of a URL object
 	 */
 	@Override
 	public URL getResource() {
@@ -166,8 +155,8 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 	}
 
 	/**
-	 * Establece la ruta donde guardar el recurso a descargar
-	 * @param savePath ruta de la carpeta donde guardar
+	 * Sets the local path where to save the resource to be download
+	 * @param savePath local path
 	 */
 	@Override
 	public void setSavePath(String savePath) {
@@ -175,8 +164,7 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 	}
 
 	/**
-	 * Obtiene la ruta donde guardar el recursos a descargar
-	 * @return la ruta de la carpeta donde guardar el recursos a descargar
+	 * @return the local path where to save the resource to be download
 	 */
 	@Override
 	public String getSavePath() {

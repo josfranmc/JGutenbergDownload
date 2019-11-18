@@ -1,14 +1,14 @@
 package org.josfranmc.gutenberg.download.engine;
 
 /**
- * Tipos de motores de descarga
+ * Types of download engines
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
  */
 public enum DownloadEngineType {
 	
 	/**
-	 * Descargas basadas en el objeto <i>java.net.HttpURLConnection</i>
+	 * Downloads based on the <code>java.net.HttpURLConnection</code> object
 	 */
 	HTTP_CONNECTION;
 

@@ -15,41 +15,39 @@ import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 
 /**
- * Ofrece herramientas para analizar ficheros en busca de enlaces web.
+ * Tools for searching web links in files.
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
  */
 public class FileScraping {
 	
 	private static final Logger log = Logger.getLogger(FileScraping.class);
 	
 	/**
-	 * Codificación del archivo a analizar
+	 * Coding of the file to analyze
 	 */
 	private static String ENCODING = "ISO-8859-1";
 	
 	/**
-	 * Patrón de la expresión regular a utilizar para detectar enlaces web
+	 * Regular expression pattern for detecting web links
 	 */
 	private static String PATTERN = ".*href=\"([^\"]*)\".*";
 
 	
-	/**
-	 * Constructor por defecto.
-	 */
-	public FileScraping() {}
+	FileScraping() {
+		throw new IllegalStateException("Cannot instantiate class");
+	}
 	
 	/**
-	 * Obtiene una lista con todos los enlaces contenidos dentro de un fichero HTML.<br>
-	 * Los enlaces son extraidos de los atributos href de los elementos &lt;a&gt;.
-	 * @param filePath ruta del fichero a analizar
-	 * @return lista de enlaces
+	 * Returns a list with all links within an html file.<br>
+	 * The links are extracted from href attributes of <code>&lt;a&gt;</code> elements.
+	 * @param filePath path of file to analyze
+	 * @return a <code>List</code> element with links
 	 */
 	public static List<String> getLinks(String filePath) {
 		List<String> links = new ArrayList<String>();
 		if (filePath != null) {
 			Path path = Paths.get(filePath);
-	    	links = new ArrayList<String>();
 	    	try (Stream<String> stream = Files.lines(path, Charset.forName(ENCODING))) {
 	    		Pattern pattern = Pattern.compile(PATTERN);
 	    		Matcher matcher = null;

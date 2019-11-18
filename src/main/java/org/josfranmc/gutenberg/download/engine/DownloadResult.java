@@ -5,42 +5,32 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Encapsula el resultado de la descarga de un recurso. Esta clase sirve para guardar juntos diferentes datos realacionados con la descarga
- * de un recurso: la cabecera devuelta en la conexión y el nombre del fichero creado, junto con su ruta. Además, si se ha producido algún error
- * puede indicarse un mensaje descriptivo del mismo.
- * 
+ * It encapsulates the result of downloading a resource. This class serves to save together different data related to the download:
+ * the header returned in the connection and the name of the file created, along with its path.
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
  */
 public class DownloadResult {
 
 	/**
-	 * Ruta del fichero descargado
+	 *  the path of the downloaded file on the local machine.
 	 */
-	private String fileOutputPath;
+	private String savedFilePath;
 	
 	/**
-	 * Conjunto de cabeceras obtenido como respuesta a una conexión establecida
+	 * Header obtained in response to a connection
 	 */
 	private Map<String, List<String>> headers;
-	
-	/**
-	 * Mensaje de error
-	 */
-	private String error;
-	
-	/**
-	 * Constructor principal.
-	 */
+
+
 	public DownloadResult() {
-		fileOutputPath = null;
+		savedFilePath = null;
 		headers = null;
-		error = null;
 	}
 
 	/**
-	 * Establece la colección de campos de cabecera devuelta por una conexión realizada
-	 * @param urlConnection conexión
+	 * Sets the header obtained in response to a connection
+	 * @param urlConnection connection made
 	 */
 	public void setHeaders(URLConnection urlConnection) {
 		headers = urlConnection.getHeaderFields();
@@ -53,60 +43,45 @@ public class DownloadResult {
 	
 	/**
 	 * 
-	 * @return la colección de las cabeceras obtenidas
+	 * @return the header obtained in response to a connection
 	 */
 	public Map<String, List<String>> getHeaders() {
 		return headers;
 	}
 	
 	/**
-	 * @return el valor del campo de la cebecera "Last-Modified"
+	 * @return the value of the header field "Last-Modified"
 	 */
 	public String getLastModified() {
-		return (headers != null) ? headers.get("Last-Modified").get(0).toString() : null;
+		return (headers != null) ? headers.get("Last-Modified").get(0).toString() : "";
 	}	
 	
 	/**
-	 * @return el valor del campo de la cebecera "Content-Type"
+	 * @return the value of the header field "Content-Type"
 	 */
 	public String getContentType() {
-		return (headers != null) ? headers.get("Content-Type").get(0).toString() : null;
+		return (headers != null) ? headers.get("Content-Type").get(0).toString() : "";
 	}	
 	
 	/**
-	 * @return el valor del campo de la cebecera "Content-Length"
+	 * @return the value of the header field "Content-Length"
 	 */
 	public String getContentLength() {
-		return (headers != null) ? headers.get("Content-Length").get(0).toString() : null;
+		return (headers != null) ? headers.get("Content-Length").get(0).toString() : "";
 	}
 
 	/**
-	 * Establece la ruta del fichero descargado.
-	 * @param fileOutputPath ruta del fichero descargado
+	 * Sets the path of the downloaded file on the local machine.
+	 * @param fileOutputPath path of the downloaded file
 	 */
-	public void setFileOutputPath(String fileOutputPath) {
-		this.fileOutputPath = fileOutputPath;
+	public void setSavedFilePath(String fileOutputPath) {
+		this.savedFilePath = fileOutputPath;
 	}
 	
 	/**
-	 * @return la ruta del fichero descargado
+	 * @return the path of the downloaded file on the local machine.
 	 */
-	public String getFileOutputPath() {
-		return fileOutputPath;
-	}
-
-	/**
-	 * @return el emnsaje de error establecido
-	 */
-	public String getError() {
-		return error;
-	}
-
-	/**
-	 * Establece un mensaje de error.
-	 * @param error mensaje
-	 */
-	public void setError(String error) {
-		this.error = error;
+	public String getSavedFilePath() {
+		return savedFilePath;
 	}
 }
