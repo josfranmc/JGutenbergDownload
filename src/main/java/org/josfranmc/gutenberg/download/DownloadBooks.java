@@ -171,7 +171,7 @@ public class DownloadBooks {
 	
 	private void delayDownload() {
 		if (getDelay() > 0) {
-	    	try {
+			try {
 				Thread.sleep(getDelay());
 			} catch (InterruptedException e) {
 				log.error("InterruptedException delayDownload. " + e);

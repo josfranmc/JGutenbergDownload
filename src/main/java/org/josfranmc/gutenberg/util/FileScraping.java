@@ -49,22 +49,22 @@ public class FileScraping {
 		List<String> links = new ArrayList<>();
 		if (filePath != null) {
 			Path path = Paths.get(filePath);
-	    	try (Stream<String> stream = Files.lines(path, ENCODING)) {
-	    		Pattern pattern = Pattern.compile(PATTERN);
-	    		Matcher matcher = null;
-	    		
-	    		Iterator<String> it = stream.iterator();
-	    		while (it.hasNext()) {
-	    			String line = it.next();
-	    			matcher = pattern.matcher(line);
-	    			if (matcher.matches()) {
-	    				links.add(matcher.group(1));
-	    			}
-	    		}
+			try (Stream<String> stream = Files.lines(path, ENCODING)) {
+				Pattern pattern = Pattern.compile(PATTERN);
+				Matcher matcher = null;
+
+				Iterator<String> it = stream.iterator();
+				while (it.hasNext()) {
+					String line = it.next();
+					matcher = pattern.matcher(line);
+					if (matcher.matches()) {
+						links.add(matcher.group(1));
+					}
+				}
 			} catch (IOException e) {
 				log.error(e);
 			}
-    	}
+		}
 		return links;		
 	}
 }

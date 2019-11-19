@@ -94,30 +94,30 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 			
 			HttpURLConnection httpConnection = null;
 			try {
-	        	httpConnection = (HttpURLConnection) getResource().openConnection();
+				httpConnection = (HttpURLConnection) getResource().openConnection();
 				configHeader(httpConnection);
 				
-	    		String outputFilePath = FileManager.getLocalFilePathFromURL(getSavePath(), getResource().toString());
-	    		
-	        	try (BufferedOutputStream outputFileStream = new BufferedOutputStream (new FileOutputStream(outputFilePath))) {
+				String outputFilePath = FileManager.getLocalFilePathFromURL(getSavePath(), getResource().toString());
 
-	        		InputStream inputStream = httpConnection.getInputStream();
-	        		
-	        		copyResource(inputStream, outputFileStream);
-		            
-				    downloadResult.setHeaders(httpConnection);
+				try (BufferedOutputStream outputFileStream = new BufferedOutputStream (new FileOutputStream(outputFilePath))) {
+
+					InputStream inputStream = httpConnection.getInputStream();
+
+					copyResource(inputStream, outputFileStream);
+
+					downloadResult.setHeaders(httpConnection);
 					downloadResult.setSavedFilePath(outputFilePath);	            
-	        	}
+				}
 				log.debug("Descargado \"" + FileManager.getLocalFileName(outputFilePath) + "\" en " + getSavePath());
 				log.debug("Tipo: " + downloadResult.getContentType() + "  Longitud: " + downloadResult.getContentLength());
 
-	        } catch (ConnectException e) {
-	        	log.warn("Download timeout exceeded");
-	        } catch (UnknownHostException e) {
-	        	throw new GutenbergException("Download UnknownHostException", e);
-            } catch (IOException e) {
-	        	throw new GutenbergException("Download IOException", e);
-            } finally {
+			} catch (ConnectException e) {
+				log.warn("Download timeout exceeded");
+			} catch (UnknownHostException e) {
+				throw new GutenbergException("Download UnknownHostException", e);
+			} catch (IOException e) {
+				throw new GutenbergException("Download IOException", e);
+			} finally {
 				if (httpConnection != null) {
 					httpConnection.disconnect();
 				}
