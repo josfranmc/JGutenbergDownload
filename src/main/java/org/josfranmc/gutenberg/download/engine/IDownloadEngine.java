@@ -18,9 +18,8 @@ public interface IDownloadEngine {
 	 * @return the result of the download in the form of a DownloadResult object
 	 * @throws GutenbergException if there is any error downloading
 	 * @see DownloadResult
-	 * @see GutenbergException
 	 */
-	public DownloadResult download() throws GutenbergException;
+	public DownloadResult download();
 	
 	/**
 	 * Sets the resource of the url to download, in the form of a URL object

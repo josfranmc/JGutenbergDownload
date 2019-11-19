@@ -34,11 +34,11 @@ public class DownloadResult {
 	 */
 	public void setHeaders(URLConnection urlConnection) {
 		headers = urlConnection.getHeaderFields();
-        /*Set<String> keys = headers.keySet();
-        for (String key : keys) {
-            String val = urlConnection.getHeaderField(key);
-            System.out.println(key+"  |  "+val);
-        }*/
+//        Set<String> keys = headers.keySet();
+//        for (String key : keys) {
+//            String val = urlConnection.getHeaderField(key);
+//            System.out.println(key+"  |  "+val);
+//        }
 	}
 	
 	/**
@@ -53,21 +53,21 @@ public class DownloadResult {
 	 * @return the value of the header field "Last-Modified"
 	 */
 	public String getLastModified() {
-		return (headers != null) ? headers.get("Last-Modified").get(0).toString() : "";
+		return (headers != null) ? headers.get("Last-Modified").get(0) : "";
 	}	
 	
 	/**
 	 * @return the value of the header field "Content-Type"
 	 */
 	public String getContentType() {
-		return (headers != null) ? headers.get("Content-Type").get(0).toString() : "";
+		return (headers != null) ? headers.get("Content-Type").get(0) : "";
 	}	
 	
 	/**
 	 * @return the value of the header field "Content-Length"
 	 */
 	public String getContentLength() {
-		return (headers != null) ? headers.get("Content-Length").get(0).toString() : "";
+		return (headers != null) ? headers.get("Content-Length").get(0) : "";
 	}
 
 	/**

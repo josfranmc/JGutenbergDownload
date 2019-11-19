@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class JGutenbergDownloadTest {
 
-	private final static String FILE_SEPARATOR = System.getProperty("file.separator");
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	/**
 	 * Comprueba los valores por defecto de la aplicación
@@ -119,10 +119,10 @@ public class JGutenbergDownloadTest {
 		String saveDir = jg.getSavePath();
 		String pageWithLinks = "harvest_filetypes[]=" + jg.getFileType() + "&langs[]=" + jg.getLanguage();
 		
-		File page = new File(saveDir + FILE_SEPARATOR + "zips" + FILE_SEPARATOR + pageWithLinks);
+		File page = new File(saveDir + "zips" + FILE_SEPARATOR + pageWithLinks);
 		assertTrue(page.exists());
 		
-		File dirZip = new File(saveDir + FILE_SEPARATOR + "zips");
+		File dirZip = new File(saveDir + "zips");
 		File[] filesInZipDirectory = dirZip.listFiles();
 		for(File f : filesInZipDirectory) {
 			if(f.exists()) {
@@ -177,6 +177,7 @@ public class JGutenbergDownloadTest {
 		jg.downloadBooks();
 		
 		deleteDownloadedFiles(jg);
+		assertTrue(true);
 	}
 	
 	@Test
@@ -198,6 +199,7 @@ public class JGutenbergDownloadTest {
 	public void showHelpWithMainMethodTest() {
 		String [] args = {"-h"};
 		JGutenbergDownload.main(args);
+		assertTrue(true);
 	}
 
 	@Test(expected=GutenbergException.class)

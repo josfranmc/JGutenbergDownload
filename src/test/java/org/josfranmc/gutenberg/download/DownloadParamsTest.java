@@ -64,9 +64,4 @@ public class DownloadParamsTest {
 		DownloadParams p = new DownloadParams();
 		p.setFileType("doc");
 	}
-	
-	@Test
-	public void URL_BOOKS_Test() {
-		assertEquals("Delay incorrecto", "http://www.gutenberg.org/robot/", DownloadParams.URL_BOOKS);
-	}
 }

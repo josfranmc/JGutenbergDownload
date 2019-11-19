@@ -30,6 +30,8 @@ public class DownloadParams {
 	 */
 	public static final String URL_BOOKS = "http://www.gutenberg.org/robot/";
 	
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator"); 
+	
 	private String fileType;
 	
 	private String language;
@@ -68,7 +70,7 @@ public class DownloadParams {
 		fileType = "txt";
 		language = "es";
 		buildHarvestURL();
-		savePath = System.getProperty("user.dir") + System.getProperty("file.separator");
+		savePath = System.getProperty("user.dir") + FILE_SEPARATOR;
 		setZipsPath();
 		overwrite = false;
 		delay = 2000;
@@ -146,8 +148,7 @@ public class DownloadParams {
 		if (savePath == null) {
 			throw new IllegalArgumentException("The directory path where to save downloads cannot be null");
 		}
-		String fileSeparator = System.getProperty("file.separator");
-		String path = (!savePath.endsWith(fileSeparator)) ? savePath.concat(fileSeparator) : savePath;
+		String path = (!savePath.endsWith(FILE_SEPARATOR)) ? savePath.concat(FILE_SEPARATOR) : savePath;
 		this.savePath = path;
 		setZipsPath();
 	}
@@ -160,7 +161,7 @@ public class DownloadParams {
 	}
 	
 	private void setZipsPath() {
-		this.zipsPath = savePath + "zips" + System.getProperty("file.separator");
+		this.zipsPath = savePath + "zips" + FILE_SEPARATOR;
 	}
 	
 	/**

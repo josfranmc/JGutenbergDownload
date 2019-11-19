@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.josfranmc.gutenberg.download.engine.DownloadEngineFactory;
 import org.josfranmc.gutenberg.download.engine.DownloadResult;
 import org.josfranmc.gutenberg.download.engine.IDownloadEngine;
-import org.josfranmc.gutenberg.util.GutenbergException;
 import org.josfranmc.gutenberg.util.FileManager;
 import org.josfranmc.gutenberg.util.FileScraping;
 
@@ -26,7 +25,7 @@ public class DownloadBooks {
 
 	private static final Logger log = Logger.getLogger(DownloadBooks.class);
 	
-	private static ExecutorService executorService;
+	private ExecutorService executorService;
 	
 	private DownloadParams parameters;
 
@@ -37,6 +36,7 @@ public class DownloadBooks {
 	
 	public DownloadBooks(DownloadParams parameters) {
 		this.parameters = parameters;
+		this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 3);
 	}
 	
 	private void settingDownloadEngine() {
@@ -51,18 +51,15 @@ public class DownloadBooks {
 	 * If there is a link to another page with more links, this page is downloaded and processed in the same way. 
 	 * This process continues until there are no more pages.<p>
 	 * All downloads run on separate threads.
-	 * @throws GutenbergException if there is any error downloading
 	 * @throws InterruptedException if there is an interruption while waiting <code>ExecutorService</code> shutdown
 	 */
-	public void executeDownload() throws GutenbergException, InterruptedException {
+	public void executeDownload() throws InterruptedException {
 		
 		settingDownloadEngine();
 		
 		DownloadResult downloadResult = downloadEngine.download();
 		if (downloadResult.getContentType().equals("text/html")) {
-			
-			executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 3);
-			
+
 			processPage(downloadResult.getSavedFilePath());
 		    
 			try {
@@ -70,6 +67,7 @@ public class DownloadBooks {
 				while (!executorService.awaitTermination(2, TimeUnit.MINUTES)) {}
 			} catch (InterruptedException e) {
 				log.warn("InterruptedException shutting down executorService. " + e.getMessage());
+				Thread.currentThread().interrupt();
 			}	
 		}
 	}
@@ -177,6 +175,7 @@ public class DownloadBooks {
 				Thread.sleep(getDelay());
 			} catch (InterruptedException e) {
 				log.error("InterruptedException delayDownload. " + e);
+				Thread.currentThread().interrupt();
 			}
 		}		
 	}
