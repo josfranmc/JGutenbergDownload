@@ -13,11 +13,11 @@ java -jar JGutenbergDownload-2.0-shaded.jar [options]
 options:
 
 -f type of files to download (default txt)  
--l language of books to download (default en)
+-l language of books to download (default en)  
 -s download path (default program's folder)  
--o overwrite existing files (default false) 
+-o overwrite existing files (default false)  
 -d delay between downloads in milliseconds (default 2000)  
--z unzip downloads (default true) 
+-z unzip downloads (default true)  
 -m max number of downloads (default 10, 0 for dowload all)    
 -h show options list
 
