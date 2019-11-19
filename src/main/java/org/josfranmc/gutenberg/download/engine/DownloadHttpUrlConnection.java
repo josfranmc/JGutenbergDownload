@@ -38,7 +38,7 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 
     
 	/**
-	 * Initializes an object with the url of the resource to download and the path where to save it
+	 * Initializes an object with the url of the resource to download and the path where to save it.
 	 * @param target resource url to download
 	 * @param savePath path where to save the download
 	 */
@@ -84,51 +84,42 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 	 * @return the result of the download in the form of a DownloadResult object
 	 * @throws GutenbergException if there is any error downloading
 	 * @see DownloadResult
-	 * @see GutenbergException
 	 */
 	@Override
-	public DownloadResult download() throws GutenbergException {
+	public DownloadResult download() {
+		
 		DownloadResult downloadResult = new DownloadResult();
+		
 		if (getResource() != null && getSavePath() != null) {
-			BufferedOutputStream  outputFileStream = null;
+			
 			HttpURLConnection httpConnection = null;
 			try {
-	            int offset = 0;
-	            final byte[] buffer = new byte[2048];
-	        	int read = 0;
-	        	
 	        	httpConnection = (HttpURLConnection) getResource().openConnection();
 				configHeader(httpConnection);
 				
 	    		String outputFilePath = FileManager.getLocalFilePathFromURL(getSavePath(), getResource().toString());
-	    		InputStream inputStream = httpConnection.getInputStream();
-	        	outputFileStream = new BufferedOutputStream (new FileOutputStream(outputFilePath));
+	    		
+	        	try (BufferedOutputStream outputFileStream = new BufferedOutputStream (new FileOutputStream(outputFilePath))) {
 
-	            while ((read = inputStream.read(buffer)) >= 0) {
-	                outputFileStream.write(buffer, offset, read);
-	                outputFileStream.flush();
-	            }
-	            
-			    downloadResult.setHeaders(httpConnection);
-				downloadResult.setSavedFilePath(outputFilePath);	            
-	            
+	        		InputStream inputStream = httpConnection.getInputStream();
+	        		
+	        		copyResource(inputStream, outputFileStream);
+		            
+				    downloadResult.setHeaders(httpConnection);
+					downloadResult.setSavedFilePath(outputFilePath);	            
+	        	}
 				log.debug("Descargado \"" + FileManager.getLocalFileName(outputFilePath) + "\" en " + getSavePath());
 				log.debug("Tipo: " + downloadResult.getContentType() + "  Longitud: " + downloadResult.getContentLength());
 
 	        } catch (ConnectException e) {
 	        	log.warn("Download timeout exceeded");
 	        } catch (UnknownHostException e) {
-	        	throw new GutenbergException("UnknownHostException", e);
-			} catch (IOException e) {
-	        	throw new GutenbergException("IOException", e);
-			} finally {
-				httpConnection.disconnect();
-			    if (outputFileStream != null) {
-					try {
-						outputFileStream.close();
-					} catch (IOException e) {
-						throw new GutenbergException("Error closing outputFileStream", e);
-					}
+	        	throw new GutenbergException("Download UnknownHostException", e);
+            } catch (IOException e) {
+	        	throw new GutenbergException("Download IOException", e);
+            } finally {
+				if (httpConnection != null) {
+					httpConnection.disconnect();
 				}
 			}
 		} else {
@@ -137,6 +128,16 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 		return downloadResult;
 	}
 
+	private void copyResource(InputStream inputStream, BufferedOutputStream outputFileStream) throws IOException {
+		int offset = 0;
+		final byte[] buffer = new byte[2048];
+		int read = 0;
+		while ((read = inputStream.read(buffer)) >= 0) {
+			outputFileStream.write(buffer, offset, read);
+			outputFileStream.flush();
+		}
+	}
+	
 	/**
 	 * Sets the resource of the url to download, in the form of a URL object
 	 * @param resource url address

@@ -2,6 +2,7 @@ package org.josfranmc.gutenberg.util;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,12 +27,12 @@ public class FileScraping {
 	/**
 	 * Coding of the file to analyze
 	 */
-	private static String ENCODING = "ISO-8859-1";
+	private static final Charset ENCODING = StandardCharsets.ISO_8859_1;
 	
 	/**
 	 * Regular expression pattern for detecting web links
 	 */
-	private static String PATTERN = ".*href=\"([^\"]*)\".*";
+	private static final String PATTERN = ".*href=\"([^\"]*)\".*";
 
 	
 	FileScraping() {
@@ -45,10 +46,10 @@ public class FileScraping {
 	 * @return a <code>List</code> element with links
 	 */
 	public static List<String> getLinks(String filePath) {
-		List<String> links = new ArrayList<String>();
+		List<String> links = new ArrayList<>();
 		if (filePath != null) {
 			Path path = Paths.get(filePath);
-	    	try (Stream<String> stream = Files.lines(path, Charset.forName(ENCODING))) {
+	    	try (Stream<String> stream = Files.lines(path, ENCODING)) {
 	    		Pattern pattern = Pattern.compile(PATTERN);
 	    		Matcher matcher = null;
 	    		

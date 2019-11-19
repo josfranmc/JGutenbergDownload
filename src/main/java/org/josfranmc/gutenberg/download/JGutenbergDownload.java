@@ -52,9 +52,8 @@ public class JGutenbergDownload {
 	
 	/**
 	 * Begins the download books process.
-	 * @throws GutenbergException if there is any error in the download
 	 */
-	public void downloadBooks() throws GutenbergException {
+	public void downloadBooks() {
 		try {
 			printParameters();
 			createDirectoriesForDownloads();
@@ -70,7 +69,7 @@ public class JGutenbergDownload {
 			log.error(e.getCause());
 			throw e;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 
@@ -275,7 +274,6 @@ public class JGutenbergDownload {
 				jg.downloadBooks();
 			}
 		}
-		//System.exit(0);
 	}
 	
 	/**
@@ -304,21 +302,19 @@ public class JGutenbergDownload {
 					params.setUnzip(Boolean.valueOf(args[i+1]));
 				} else if (args[i].equals("-m")) {
 					params.setMaxFilesToDownload(Integer.parseInt(args[i+1]));
-				///} else if (args[i].equals("-e")) {
-				//	params.setEngineType(DownloadEngineType.valueOf(args[i+1].toUpperCase()));
 				} else {
-					System.out.println("Parameter: " + args[i] + " unrecognized. Run JGutenbergDownload -h to show options.");
+					System.err.println("Parameter: " + args[i] + " unrecognized. Run JGutenbergDownload -h to show options.");
 					params = null;
 					break;
 				}
 			} catch (ArrayIndexOutOfBoundsException a) {
 				params = null;
-				System.out.println("[ERROR] Incorrect number of parameters");
+				System.err.println("[ERROR] Incorrect number of parameters");
 				break;
 			} 
 			catch (Exception e) {
 				params = null;
-				System.out.println("[ERROR] reading parameter " + i + ". Parameter = " + args[i] + ", Value = " + args[i+1]);
+				System.err.println("[ERROR] reading parameter " + i + ". Parameter = " + args[i] + ", Value = " + args[i+1]);
 				log.error(e);
 				break;
 			}

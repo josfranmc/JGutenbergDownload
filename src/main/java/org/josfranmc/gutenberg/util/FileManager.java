@@ -2,7 +2,6 @@ package org.josfranmc.gutenberg.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -24,9 +23,9 @@ import org.apache.log4j.Logger;
  */
 public class FileManager {
 
-	private final static Logger log = Logger.getLogger(FileManager.class);
+	private static final Logger log = Logger.getLogger(FileManager.class);
 	
-	private final static String FILE_SEPARATOR = System.getProperty("file.separator");
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	
 	
 	FileManager() {
@@ -54,7 +53,7 @@ public class FileManager {
 	 */
 	public static String getLocalFilePathFromURL(String savePath, String link) {
 		String path = (!savePath.endsWith(FILE_SEPARATOR)) ? savePath + FILE_SEPARATOR : savePath;
-		String fileName = link.substring(link.lastIndexOf("/")+1, link.length())
+		String fileName = link.substring(link.lastIndexOf('/')+1, link.length())
 				              .replace("?", "_")
 				              .replace("&amp;", "&");
 		return (path + fileName);
@@ -78,37 +77,27 @@ public class FileManager {
 	 */
 	public static void unzipFiles(String inputPath, String outputPath) {
 		if (inputPath != null && outputPath != null) {
-			String fileName = null;
-			byte[] buffer = new byte[1024];
-			int len = 0;
-			if (!outputPath.endsWith(FILE_SEPARATOR)) {
-				outputPath = outputPath + FILE_SEPARATOR;
-			}
+			inputPath = checkAndFixPath(inputPath);
+			outputPath = checkAndFixPath(outputPath);
 			for (String zipFile : getZipFiles(inputPath)) {
-				try {
-					ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+				try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
 					ZipEntry zipEntry = zis.getNextEntry();
 			        while (zipEntry != null) {
-						fileName = getFileName(zipEntry.getName());
-						FileOutputStream fos = new FileOutputStream(new File(outputPath + fileName));
-			            while ((len = zis.read(buffer)) > 0) {
-			                fos.write(buffer, 0, len);
-			            }
-			            fos.close();
-			            zipEntry = zis.getNextEntry();
+			        	String targetFile = outputPath + getFileName(zipEntry.getName()) ;
+						extracFile(zis, targetFile);
+						zipEntry = zis.getNextEntry();
 			        }
-			        zis.closeEntry();
-			        zis.close();
-			        log.debug("Obtenido " + outputPath + fileName);
-				} catch (FileNotFoundException e) {
-					log.error("File Not Found: " + zipFile);
 				} catch (IOException e) {
-					log.error(e);
-				}
+					log.error("IOException with zip file" + zipFile);
+				}	
 			}
 		} else {
 			log.warn("Rutas no válidas");
 		}
+	}
+	
+	private static String checkAndFixPath(String path) {
+		return (!path.endsWith(FILE_SEPARATOR)) ? (path + FILE_SEPARATOR) : path;
 	}
 	
 	/**
@@ -117,7 +106,7 @@ public class FileManager {
 	 * @return a <code>List</code> with the files paths
 	 */
 	private static List<String> getZipFiles(String path) {
-		List<String> zipFiles = new ArrayList<String>();
+		List<String> zipFiles = new ArrayList<>();
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(path), "*.zip")) {
 			for (Path file: stream) {
 				zipFiles.add(file.toString());
@@ -131,9 +120,24 @@ public class FileManager {
 	private static String getFileName(String entryName) {
         String fileName = entryName;
         int index = -1;
-		if ((index = fileName.lastIndexOf("/")) != -1) {
+		if ((index = fileName.lastIndexOf('/')) != -1) {
 			fileName = fileName.substring(index+1);
+			if (fileName.contains("..")) {
+				throw new GutenbergException("Entry is trying to leave the target dir: " + entryName);
+			}
 		}
 		return fileName;
+	}
+	
+	private static void extracFile(ZipInputStream zis, String targetFile) {
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		try (FileOutputStream fos = new FileOutputStream(new File(targetFile))) {
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+		} catch (IOException e) {
+			log.error("Error unzipping file " + targetFile);
+		}
 	}
 }

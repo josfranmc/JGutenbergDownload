@@ -79,7 +79,7 @@ public class DownloadEngineFactory {
 	}
 	
 	private static IDownloadEngine createDownloadEngine(URL target, String savePath, DownloadEngineType type) {
-		type = (type == null) ? DownloadEngineType.HTTP_CONNECTION : type;
+		//type = (type == null) ? DownloadEngineType.HTTP_CONNECTION : type;
 		// por ahora type solo puede tomar el valor DownloadEngineType.HTTP_CONNECTION
 		return DownloadHttpUrlConnection.newInstance(target, savePath);
 	}
