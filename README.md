@@ -1,31 +1,25 @@
 # JGutenbergDownload
-Descarga de ficheros desde los repositorios del proyecto Gutenberg.
+It allows to download books from the Gutenberg project repositories.
 
-## Contenido
-+ jar-flat: fichero jar con las clases de la aplicación junto a las dependencias necesarias, que se ubican en la carpeta lib
-+ jar-shaded: fichero jar con las clases de la aplicación y con las dependencias necesarias incluidas en él
-+ javadoc: documentación del código
-+ src: Código fuente
+## Content
++ javadoc: code documentation
++ src: source code
 
-## Uso
-Desde línea de comandos:
+## How to use
+From command line:
 
-java -jar JGutenbergDownload-1.0-shaded.jar [*opciones*]
+java -jar JGutenbergDownload-2.0-shaded.jar [options]
 
-opciones:
+options:
 
--t tipo fichero (por defecto txt)  
--i idioma (por defecto en)  
--d tiempo de espera en milisegundos (por defecto 2000)  
--s ruta donde guardar las descargas  
--m total_ficheros_a_descargar (por defecto 10, el valor 0 descarga todo)  
--z descomprimir (true/false, por defecto true)  
--o sobreescribir existentes (true/false, por defecto false)  
--x modo de descarga (SOFT/GREEDY, por defecto SOFT)  
-
--h muestra lista de opciones
+-f type of files to download (default txt)  
+-l language of books to download (default en)
+-s download path (default program's folder)  
+-o overwrite existing files (default false) 
+-d delay between downloads in milliseconds (default 2000)  
+-z unzip downloads (default true) 
+-m max number of downloads (default 10, 0 for dowload all)    
+-h show options list
 
 ## Notas  
-Si se usa el jar flat hay que asegurarse que exista la carpeta lib dentro de la carpeta desde la que ejecutemos la aplicación.
-
-El fichero de log generado se guarda en la carpeta log.
+A log file in a folder called log is generated.

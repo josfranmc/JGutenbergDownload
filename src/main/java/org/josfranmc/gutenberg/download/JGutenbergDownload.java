@@ -11,7 +11,7 @@ import org.josfranmc.gutenberg.util.GutenbergException;
 import org.josfranmc.gutenberg.util.FileManager;
 
 /**
- * Download books from the Gutenberg project repositories.<br>
+ * It allows to download books from the Gutenberg project repositories.<br>
  * (<a href="http://www.gutenberg.org/">http://www.gutenberg.org</a>)
  * @author Jose Francisco Mena Ceca
  * @version 2.0
@@ -174,7 +174,7 @@ public class JGutenbergDownload {
 	
 	/**
 	 * Sets if the existing files must be overwritten by the downloaded ones
-	 * @param overwrite <i>true</i> if the existing files must be overwritten, <i>false</i> otherwise
+	 * @param value <i>true</i> if the existing files must be overwritten, <i>false</i> otherwise
 	 */
 	public void setOverwrite(boolean value) {
 		parameters.setOverwrite(value);
@@ -204,7 +204,7 @@ public class JGutenbergDownload {
 
 	/**
 	 * Sets if downloaded files must be unzipping,
-	 * @param unzip <i>true</i> if downloaded files must be unzipping, <i>false</i> otherwise
+	 * @param value <i>true</i> if downloaded files must be unzipping, <i>false</i> otherwise
 	 */
 	public void setUnzip(boolean value) {
 		parameters.setUnzip(value);

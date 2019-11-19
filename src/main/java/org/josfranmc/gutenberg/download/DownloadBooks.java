@@ -49,7 +49,7 @@ public class DownloadBooks {
 	 * Perfoms the book download process.<p>
 	 * The first download should be a file with links to the books to download. All existing links are downloaded.
 	 * If there is a link to another page with more links, this page is downloaded and processed in the same way. 
-	 * This process continue until there are no more pages.<p>
+	 * This process continues until there are no more pages.<p>
 	 * All downloads run on separate threads.
 	 * @throws GutenbergException if there is any error downloading
 	 * @throws InterruptedException if there is an interruption while waiting <code>ExecutorService</code> shutdown
