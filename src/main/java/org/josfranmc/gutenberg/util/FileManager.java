@@ -84,7 +84,7 @@ public class FileManager {
 					ZipEntry zipEntry = zis.getNextEntry();
 					while (zipEntry != null) {
 						String targetFile = outputPath + getFileName(zipEntry.getName()) ;
-						extracFile(zis, targetFile);
+						extractFile(zis, targetFile);
 						zipEntry = zis.getNextEntry();
 			        }
 				} catch (IOException e) {
@@ -129,7 +129,7 @@ public class FileManager {
 		return fileName;
 	}
 	
-	private static void extracFile(ZipInputStream zis, String targetFile) {
+	private static void extractFile(ZipInputStream zis, String targetFile) {
 		byte[] buffer = new byte[1024];
 		int len = 0;
 		try (FileOutputStream fos = new FileOutputStream(new File(targetFile))) {
