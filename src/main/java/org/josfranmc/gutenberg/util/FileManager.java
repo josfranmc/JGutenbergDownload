@@ -39,8 +39,8 @@ public class FileManager {
 	 * @return <i>true</i> if the file indicated by the url exists in the local path, <i>false</i> otherwise
 	 */
 	public static boolean fileExists(String localPath, String url) {
-    	return new File(getLocalFilePathFromURL(localPath, url)).exists();
-    }
+		return new File(getLocalFilePathFromURL(localPath, url)).exists();
+	}
 	
 	/**
 	 * Returns the path a file must have when downloaded on the local machine.<br>
@@ -82,8 +82,8 @@ public class FileManager {
 			for (String zipFile : getZipFiles(inputPath)) {
 				try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
 					ZipEntry zipEntry = zis.getNextEntry();
-			        while (zipEntry != null) {
-			        	String targetFile = outputPath + getFileName(zipEntry.getName()) ;
+					while (zipEntry != null) {
+						String targetFile = outputPath + getFileName(zipEntry.getName()) ;
 						extracFile(zis, targetFile);
 						zipEntry = zis.getNextEntry();
 			        }
@@ -111,15 +111,15 @@ public class FileManager {
 			for (Path file: stream) {
 				zipFiles.add(file.toString());
 			}
-	     } catch (IOException e) {
-	    	 log.error(e);
-	     }
+		} catch (IOException e) {
+			log.error(e);
+		}
 		return zipFiles;
 	}
 	
 	private static String getFileName(String entryName) {
-        String fileName = entryName;
-        int index = -1;
+		String fileName = entryName;
+		int index = -1;
 		if ((index = fileName.lastIndexOf('/')) != -1) {
 			fileName = fileName.substring(index+1);
 			if (fileName.contains("..")) {
@@ -133,9 +133,9 @@ public class FileManager {
 		byte[] buffer = new byte[1024];
 		int len = 0;
 		try (FileOutputStream fos = new FileOutputStream(new File(targetFile))) {
-            while ((len = zis.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
-            }
+			while ((len = zis.read(buffer)) > 0) {
+				fos.write(buffer, 0, len);
+			}
 		} catch (IOException e) {
 			log.error("Error unzipping file " + targetFile);
 		}
