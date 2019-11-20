@@ -78,9 +78,15 @@ public class DownloadEngineFactory {
 		return createDownloadEngine(target, savePath, DownloadEngineType.HTTP_CONNECTION);
 	}
 	
+	/**
+	 * Creates an engine for downloading.<p>
+	 * por ahora type solo puede tomar el valor DownloadEngineType.HTTP_CONNECTION por lo que creamos directamente un objeto de esta clase
+	 * @param target the url address to download
+	 * @param savePath local path where to save download
+	 * @param type engine type for downloading
+	 * @return a download engine in the form of a <code>IDownloadEngine</code> object
+	 */
 	private static IDownloadEngine createDownloadEngine(URL target, String savePath, DownloadEngineType type) {
-		//type = (type == null) ? DownloadEngineType.HTTP_CONNECTION : type;
-		// por ahora type solo puede tomar el valor DownloadEngineType.HTTP_CONNECTION
 		return DownloadHttpUrlConnection.newInstance(target, savePath);
 	}
 }
