@@ -101,7 +101,7 @@
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.josfranmc.gutenberg.download.client.JGutenbergDownloadClient</mainClass>
+                                    <mainClass>org.josfranmc.gutenberg.download.JGutenbergDownload</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
