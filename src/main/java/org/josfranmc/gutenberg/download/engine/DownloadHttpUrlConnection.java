@@ -114,9 +114,11 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 			} catch (ConnectException e) {
 				log.warn("Download timeout exceeded");
 			} catch (UnknownHostException e) {
-				throw new GutenbergException("Download UnknownHostException", e);
+				log.error("[ERROR] UnknownHostException in download engine");
+				throw new GutenbergException("UnknownHostException in download engine", e);
 			} catch (IOException e) {
-				throw new GutenbergException("Download IOException", e);
+				log.error("[ERROR] IOException in download engine");
+				throw new GutenbergException("IOException in download engine", e);
 			} finally {
 				if (httpConnection != null) {
 					httpConnection.disconnect();

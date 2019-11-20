@@ -158,7 +158,7 @@ public class JGutenbergDownloadTest {
 		deleteDownloadedFiles(jg);
 	}
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void wrongParameterskWithMainMethodTest() {
 		String [] args = {"-d", "0", "-w", "1", "-s", "testdownload3"};
 		
