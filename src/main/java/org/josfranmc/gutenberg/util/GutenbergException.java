@@ -5,9 +5,8 @@ package org.josfranmc.gutenberg.util;
  * @author Jose Francisco Mena Ceca
  * @version 2.0
  */
+@SuppressWarnings("serial")
 public class GutenbergException extends RuntimeException {
-
-	private static final long serialVersionUID = -8740400616606275937L;
 
 	public GutenbergException() {
 		super();
