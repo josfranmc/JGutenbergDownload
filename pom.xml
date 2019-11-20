@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>JGutenbergDownload</name>
-  <description>Download files from the Gutenberg project repositories</description>
+  <description>It allows to download books from the Gutenberg project repositories. </description>
 
   <developers>
     <developer>
