@@ -51,9 +51,8 @@ public class DownloadBooks {
 	 * If there is a link to another page with more links, this page is downloaded and processed in the same way. 
 	 * This process continues until there are no more pages.<p>
 	 * All downloads run on separate threads.
-	 * @throws InterruptedException if there is an interruption while waiting <code>ExecutorService</code> shutdown
 	 */
-	public void executeDownload() throws InterruptedException {
+	public void executeDownload() {
 		
 		settingDownloadEngine();
 		

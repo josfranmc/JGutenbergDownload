@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
-import org.josfranmc.gutenberg.util.GutenbergException;
 import org.josfranmc.gutenberg.util.FileManager;
 
 /**
@@ -51,26 +50,21 @@ public class JGutenbergDownload {
 	}
 	
 	/**
-	 * Begins the download books process.
+	 * Begins the process of downloading books.<p>
+	 * If there is any problem It can be thrown <code>GutenbergException</code>
 	 */
 	public void downloadBooks() {
-		try {
-			printParameters();
-			createDirectoriesForDownloads();
-			log.info("BEGIN BOOKS DOWNLOAD " + getCurrentTime());
-			DownloadBooks downloader = new DownloadBooks(parameters);
-			log.info("Downloading...");
-			downloader.executeDownload();
-			if (parameters.isUnzip()) {
-				unzipFiles();
-			}
-			log.info("END BOOKS DOWNLOAD " + getCurrentTime());
-		} catch (GutenbergException e) {
-			log.error(e.getCause());
-			throw e;
-		} catch (Exception e) {
-			log.error(e.getMessage());
+		printParameters();
+		createDirectoriesForDownloads();
+		log.info("BEGIN BOOKS DOWNLOAD " + getCurrentTime());
+		DownloadBooks downloader = new DownloadBooks(parameters);
+		log.info("Downloading...");
+		downloader.executeDownload();
+		if (parameters.isUnzip()) {
+			log.info("Unzipping files... ");
+			FileManager.unzipFiles(parameters.getZipsPath(), parameters.getSavePath());
 		}
+		log.info("END BOOKS DOWNLOAD " + getCurrentTime());
 	}
 
 	private void createDirectoriesForDownloads() {
@@ -97,16 +91,6 @@ public class JGutenbergDownload {
 				throw new IllegalStateException("Cannot create directory for zips");	
 			}
 		}
-	}
-	
-	private void unzipFiles() {
-		String zipPath = parameters.getZipsPath();
-		String unZipPath = parameters.getSavePath();
-		log.info("UNZIP FILES");
-		log.info("Zip files path: " + zipPath);
-		log.info("Unzipping path: " + unZipPath);
-		log.info("Unzipping... ");
-		FileManager.unzipFiles(zipPath, unZipPath);
 	}
 
 	/**
@@ -249,7 +233,7 @@ public class JGutenbergDownload {
 	}
 	
 	private void printParameters() {
-		log.info("Parameters:");
+		log.info("PARAMETERS:");
 		log.info("  urlBase = " + parameters.getUrlBase().toString());
 		log.info("  savePath = " + parameters.getSavePath());
 		log.info("  overwrite = " + parameters.isOverwrite());
@@ -268,72 +252,71 @@ public class JGutenbergDownload {
 			showHelp();
 		} else {
 			DownloadParams params = getParametersFromCommandLine(args);
-			if (params != null) {
-				JGutenbergDownload jg = new JGutenbergDownload();
-				jg.setParameters(params);				
-				jg.downloadBooks();
-			}
+			JGutenbergDownload jg = new JGutenbergDownload();
+			jg.setParameters(params);				
+			jg.downloadBooks();
 		}
 	}
 	
 	/**
-	 * Reads settings parameters from command line. 
+	 * Reads settings parameters from command line.<br>
+	 * Throws an Exception if there is any error.
 	 * @param args list of parameters obtained from the command line
-	 * @return a <code>DownloadParams</code> object or null if there is any error
+	 * @return a <code>DownloadParams</code> object.
 	 */
 	private static DownloadParams getParametersFromCommandLine(String [] args) {
-		log.debug("Total parámetros: " + args.length);
-		DownloadParams params = null;
-		params = new DownloadParams();
-		for (int i = 0; i < args.length; i+=2) {
+		DownloadParams params = new DownloadParams();
+		int i = 0;
+		int step = 0;
+		while (i < args.length) {
 			try {
-				log.debug("argumento " + args[i] + " valor " + args[i+1]);
 				if (args[i].startsWith("-f")) {
 					params.setFileType(args[i+1]);
+					step = 2;
 				} else if (args[i].equals("-l")) {
 					params.setLanguage(args[i+1]);
+					step = 2;
 				} else if (args[i].equals("-s")) {
 					params.setSavePath(args[i+1]);
-				} else if (args[i].equals("-o")) {
-					params.setOverwrite(Boolean.valueOf(args[i+1]));
+					step = 2;
 				} else if (args[i].equals("-d")) {
 					params.setDelay(Integer.parseInt(args[i+1]));
-				} else if (args[i].equals("-z")) {
-					params.setUnzip(Boolean.valueOf(args[i+1]));
+					step = 2;
 				} else if (args[i].equals("-m")) {
 					params.setMaxFilesToDownload(Integer.parseInt(args[i+1]));
+					step = 2;
+				} else if (args[i].equals("-o")) {
+					params.setOverwrite(true);
+					step = 1;
+				} else if (args[i].equals("-z")) {
+					params.setUnzip(false);
+					step = 1;					
 				} else {
-					System.err.println("Parameter: " + args[i] + " unrecognized. Run JGutenbergDownload -h to show options.");
-					params = null;
-					break;
+					throw new IllegalArgumentException("Parameter " + args[i]);
 				}
 			} catch (ArrayIndexOutOfBoundsException a) {
-				params = null;
-				System.err.println("[ERROR] Incorrect number of parameters");
-				break;
-			} 
-			catch (Exception e) {
-				params = null;
-				System.err.println("[ERROR] reading parameter " + i + ". Parameter = " + args[i] + ", Value = " + args[i+1]);
-				log.error(e);
-				break;
+				throw new IllegalArgumentException("Parameter " + args[i]);
+			} catch (Exception e) {
+				throw e;
 			}
+			i+=step;
 		}
 		return params;
 	}
 	
 	private static void showHelp() {
-		System.out.println("");
-		System.out.println("Options:");
-		System.out.println("   -f type of files to download (default txt)");
-		System.out.println("   -l language of books to download (default es)");
-		System.out.println("   -s download path on local machine (default program's folder)");
-		System.out.println("   -o overwrite existing files (default false)");
-		System.out.println("   -d delay between downloads in milliseconds (default 2000)");
-		System.out.println("   -z unzip downloads (default true)");
-		System.out.println("   -m max number of downloads (default 10, 0 for dowload all)");
-		System.out.println("");
-		System.out.println("(only -h to show options list)");
-		System.out.println("");
+		log.info("");
+		log.info("Usage: java -jar JGutenbergDownload [options]");
+		log.info("Options:");
+		log.info("   -f xxx (xxx type of files to download, default: txt)");
+		log.info("   -l xx  (xx  language of books to download, default: es)");
+		log.info("   -s xxx (xxx download path on local machine, default: program folder)");
+		log.info("   -d xxx (xxx delay between downloads in milliseconds, default 2000)");
+		log.info("   -m xx  (xx  max number of downloads (default 10, 0 for dowload all)");
+		log.info("   -o     (    overwrite existing files, default: false)");
+		log.info("   -z     (    don't unzip downloads, default: true)");
+		log.info("");
+		log.info("(only -h to show options list)");
+		log.info("");
 	}
 }
