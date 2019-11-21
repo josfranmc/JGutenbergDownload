@@ -42,10 +42,10 @@ public class DownloadHttpUrlConnectionTest {
 	}
 	
 	/**
-	 * Si se indica una dirección de descarga errónea, se debe lanzar DownloadException
+	 * Si se indica una dirección de descarga errónea, se debe lanzar GutenbergException
 	 */
 	@Test(expected=GutenbergException.class)
-	public void givenUrlWhenWrongAddressThenFileOutputPathShoulbBeNull() {
+	public void givenUrlWhenWrongAddressThenGutenbergException() {
 		try {
 			DownloadHttpUrlConnection.newInstance(new URL("http://www.qsctyhu.com/fake.img"), null).download();
 		} catch (MalformedURLException e) {

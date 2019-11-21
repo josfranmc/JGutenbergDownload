@@ -119,10 +119,10 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 				configHeader(httpConnection);
 				
 				String outputFilePath = FileManager.getLocalFilePathFromURL(getSavePath(), getResource().toString());
-
+				
+				InputStream inputStream = httpConnection.getInputStream();
+				
 				try (BufferedOutputStream outputFileStream = new BufferedOutputStream (new FileOutputStream(outputFilePath))) {
-
-					InputStream inputStream = httpConnection.getInputStream();
 
 					copyResource(inputStream, outputFileStream);
 
