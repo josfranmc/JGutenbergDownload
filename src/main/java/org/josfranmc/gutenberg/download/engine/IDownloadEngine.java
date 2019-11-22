@@ -1,44 +1,63 @@
+/*
+ *  Copyright (C) 2018-2019 Jose Francisco Mena Ceca <josfranmc@gmail.com>
+ *
+ *  This file is part of JGutenbergDownload.
+ *
+ *  JGutenbergDownload is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  JGutenbergDownload is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with JGutenbergDownload.  If not, see <https://www.gnu.org/licenses/>. 
+ */
 package org.josfranmc.gutenberg.download.engine;
 
 import java.net.URL;
 
+import org.josfranmc.gutenberg.download.GutenbergException;
+
 /**
- * Define el comportamiento que tiene que ofrecer toda clase que quiera implementar la capacidad de descargar
- * un recurso identificado por una URL
- * 
+ * Defines the behavior that a class have to implement in order to have the ability to download resources on net.
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
+ * @see IDownloadEngine
+ * @see GutenbergException
  */
 public interface IDownloadEngine {
 
 	/**
-	 * Ejecuta el proceso de descarga.
-	 * @return el resultado de la descarga encapsulado en un objeto de tipo DownloadResult
+	 * Runs a download.
+	 * @return the result of the download in the form of a DownloadResult object
+	 * @throws GutenbergException if there is any error downloading
 	 * @see DownloadResult
 	 */
 	public DownloadResult download();
 	
 	/**
-	 * Establece la dirección del recurso a descargar, la cual se maneja como un objeto de tipo URL
-	 * @param resource dirección del recurso que se quiere obtener
+	 * Sets the resource of the url to download, in the form of a URL object
+	 * @param resource url address
 	 */
 	public void setResource(URL resource);
     
 	/**
-	 * Obtiene la dirección del recurso a descargar como un objeto de tipo URL
-	 * @return dirección del recurso a descargar
+	 * @return the resource of the url to download, in the form of a URL object
 	 */
 	public URL getResource();
 
 	/**
-	 * Establece la ruta donde guardar el recurso a descargar
-	 * @param savePath ruta donde guardar
+	 * Sets the local path where to save the resource to be download
+	 * @param savePath local path
 	 */
 	public void setSavePath(String savePath); 
 	
 	/**
-	 * Obtiene la ruta donde guardar el recursos a descargar
-	 * @return ruta donde guardar
+	 * @return the local path where to save the resource to be download
 	 */
 	public String getSavePath();
 
