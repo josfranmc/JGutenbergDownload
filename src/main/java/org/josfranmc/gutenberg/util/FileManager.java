@@ -104,8 +104,11 @@ public class FileManager {
 				try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
 					ZipEntry zipEntry = zis.getNextEntry();
 					while (zipEntry != null) {
-						String targetFile = outputPath + getFileName(zipEntry.getName()) ;
-						extractFile(zis, targetFile);
+						String fileName = getFileName(zipEntry.getName());
+						if (!fileName.isEmpty()) {
+							String targetFile = outputPath + fileName;
+							extractFile(zis, targetFile);
+						}
 						zipEntry = zis.getNextEntry();
 			        }
 				} catch (IOException e) {
