@@ -37,6 +37,7 @@ import org.josfranmc.gutenberg.util.FileManager;
  * @version 2.0
  * @see DownloadParams
  * @see DownloadEngineType
+ * @see GutenbergException
  */
 public class JGutenbergDownload {
 	
@@ -73,6 +74,8 @@ public class JGutenbergDownload {
 	/**
 	 * Begins the process of downloading books.<p>
 	 * If there is any problem It can be thrown <code>GutenbergException</code>
+	 * @throws GutenbergException
+	 * @see GutenbergException
 	 */
 	public void downloadBooks() {
 		printParameters();
@@ -313,10 +316,10 @@ public class JGutenbergDownload {
 					params.setUnzip(false);
 					step = 1;					
 				} else {
-					throw new IllegalArgumentException("Parameter " + args[i]);
+					throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Parameter " + args[i]);
 				}
 			} catch (ArrayIndexOutOfBoundsException a) {
-				throw new IllegalArgumentException("Parameter " + args[i]);
+				throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Parameter " + args[i]);
 			} catch (Exception e) {
 				throw e;
 			}

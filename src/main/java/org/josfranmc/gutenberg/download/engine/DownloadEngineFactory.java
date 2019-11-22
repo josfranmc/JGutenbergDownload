@@ -105,12 +105,6 @@ public class DownloadEngineFactory {
 	 * @return a download engine in the form of a <code>IDownloadEngine</code> object
 	 */
 	private static IDownloadEngine createDownloadEngine(URL target, String savePath, DownloadEngineType type) {
-		IDownloadEngine engine = null;
-		if (type == DownloadEngineType.HTTP_CONNECTION) {
-			engine = DownloadHttpUrlConnection.newInstance(target, savePath);
-		} else {
-			engine = DownloadHttpUrlConnection.newInstance(target, savePath);
-		}
-		return engine;
+		return DownloadHttpUrlConnection.newInstance(target, savePath);
 	}
 }

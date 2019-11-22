@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
-import org.josfranmc.gutenberg.util.GutenbergException;
 import org.junit.Test;
 
 /**
@@ -54,7 +53,7 @@ public class JGutenbergDownloadTest {
 	/**
 	 * Si el parámetro fileType es un valor no válido, entonces lanzar excepción IllegalArgumentException
 	 */
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=GutenbergException.class)
 	public void givenFileTypeWhenWrongValueThenIllegalArgumentException() {
 		JGutenbergDownload jg = new JGutenbergDownload();
 		jg.setFileType("bad");
@@ -63,7 +62,7 @@ public class JGutenbergDownloadTest {
 	/**
 	 * Si la ruta indicada para guardar las descargas es null, entonces lanzar excepción IllegalArgumentException
 	 */
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=GutenbergException.class)
 	public void givenSavePathWhenNullThenIllegalArgumentException() {
 		JGutenbergDownload jg = new JGutenbergDownload();
 		jg.setSavePath(null);
@@ -95,7 +94,7 @@ public class JGutenbergDownloadTest {
 	/**
 	 * Si el parámetro MaxFilesToDownload es menor de cero, entonces lanzar excepción IllegalArgumentException
 	 */
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=GutenbergException.class)
 	public void givenMaxFilesToDownloadWhenMinusZeroThenIllegalArgumentException() {
 		JGutenbergDownload jg = new JGutenbergDownload();
 		jg.setMaxFilesToDownload(-1);
@@ -158,7 +157,7 @@ public class JGutenbergDownloadTest {
 		deleteDownloadedFiles(jg);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=GutenbergException.class)
 	public void wrongParameterskWithMainMethodTest() {
 		String [] args = {"-d", "0", "-w", "1", "-s", "testdownload3"};
 		

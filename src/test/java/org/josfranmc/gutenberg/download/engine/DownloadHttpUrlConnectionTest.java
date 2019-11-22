@@ -9,10 +9,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.josfranmc.gutenberg.download.GutenbergException;
 import org.josfranmc.gutenberg.download.engine.DownloadHttpUrlConnection;
 import org.josfranmc.gutenberg.download.engine.DownloadResult;
 import org.josfranmc.gutenberg.download.engine.IDownloadEngine;
-import org.josfranmc.gutenberg.util.GutenbergException;
 import org.junit.Test;
 
 public class DownloadHttpUrlConnectionTest {

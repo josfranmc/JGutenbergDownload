@@ -32,7 +32,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
-import org.josfranmc.gutenberg.util.GutenbergException;
+import org.josfranmc.gutenberg.download.GutenbergException;
 import org.josfranmc.gutenberg.util.FileManager;
 
 /**
@@ -136,17 +136,17 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 				log.warn("Download timeout exceeded");
 			} catch (UnknownHostException e) {
 				log.error("[ERROR] UnknownHostException in download engine");
-				throw new GutenbergException("UnknownHostException in download engine", e);
+				throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: UnknownHostException in download engine", e);
 			} catch (IOException e) {
 				log.error("[ERROR] IOException in download engine");
-				throw new GutenbergException("IOException in download engine", e);
+				throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: IOException in download engine", e);
 			} finally {
 				if (httpConnection != null) {
 					httpConnection.disconnect();
 				}
 			}
 		} else {
-			log.warn("DOWNLOAD It must be indicated resource and route where to obtain the download");
+			log.warn("[WARN] ENGINE It must be indicated resource and route where to obtain the download");
 		}
 		return downloadResult;
 	}

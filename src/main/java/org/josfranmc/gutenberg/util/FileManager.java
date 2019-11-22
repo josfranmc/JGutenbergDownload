@@ -35,6 +35,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
+import org.josfranmc.gutenberg.download.GutenbergException;
 
 /**
  * Tools for managing files.
@@ -147,7 +148,7 @@ public class FileManager {
 		if ((index = fileName.lastIndexOf('/')) != -1) {
 			fileName = fileName.substring(index+1);
 			if (fileName.contains("..")) {
-				throw new GutenbergException("Entry is trying to leave the target dir: " + entryName);
+				throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Entry is trying to leave the target dir: " + entryName);
 			}
 		}
 		return fileName;

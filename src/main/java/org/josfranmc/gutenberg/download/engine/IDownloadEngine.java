@@ -20,7 +20,7 @@ package org.josfranmc.gutenberg.download.engine;
 
 import java.net.URL;
 
-import org.josfranmc.gutenberg.util.GutenbergException;
+import org.josfranmc.gutenberg.download.GutenbergException;
 
 /**
  * Defines the behavior that a class have to implement in order to have the ability to download resources on net.
