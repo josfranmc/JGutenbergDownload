@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with JGutenbergDownload.  If not, see <https://www.gnu.org/licenses/>.
  */ 
-package org.josfranmc.gutenberg.util;
+package org.josfranmc.gutenberg.download;
 
 /**
  * It allows to capture exceptions in the application in the form of a RuntimeException.

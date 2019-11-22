@@ -108,11 +108,11 @@ public class DownloadParams {
 	/**
 	 * Sets the type of file to download. Valid types: txt, epub, html
 	 * @param fileType type of file to download
-	 * @throws IllegalArgumentException if an invalid file type is indicated
+	 * @throws GutenbergException if an invalid file type is indicated
 	 */
 	public void setFileType(String fileType) {
 		if (!fileType.equals("txt") && !fileType.equals("epub") && !fileType.equals("html")) {
-			throw new IllegalArgumentException("Invalid file type");
+			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Wrong file type parameter");
 		}
 		this.fileType = fileType;
 		buildHarvestURL();
@@ -160,11 +160,11 @@ public class DownloadParams {
 	/**
 	 * Sets folder path where to get downloaded resources
 	 * @param savePath folder path where to get downloaded resources
-	 * @throws IllegalArgumentException if the parameter is null
+	 * @throws GutenbergException if the parameter is null
 	 */
 	public void setSavePath(String savePath) {
 		if (savePath == null) {
-			throw new IllegalArgumentException("The directory path where to save downloads cannot be null");
+			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: The directory path where to save downloads cannot be null");
 		}
 		String path = (!savePath.endsWith(FILE_SEPARATOR)) ? savePath.concat(FILE_SEPARATOR) : savePath;
 		this.savePath = path;
@@ -207,11 +207,11 @@ public class DownloadParams {
 	/**
 	 * Sets delay between downloads
 	 * @param delay waiting time, in milliseconds
-	 * @throws IllegalArgumentException if a number less than zero is indicated
+	 * @throws GutenbergException if a number less than zero is indicated
 	 */
 	public void setDelay(int delay) {
 		if (delay < 0) {
-			throw new IllegalArgumentException("delay cannot be less than zero");
+			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Delay parameter cannot be less than zero");
 		}
 		this.delay = delay;
 	}
@@ -241,11 +241,11 @@ public class DownloadParams {
 	/**
 	 * Sets the maximum number of files to download. The zero indicates downloading all available files.
 	 * @param maxFilesToDownload files number
-	 * @throws IllegalArgumentException if a number less than zero is indicated
+	 * @throws GutenbergException if a number less than zero is indicated
 	 */
 	public void setMaxFilesToDownload(int maxFilesToDownload) {
 		if (maxFilesToDownload < 0) {
-			throw new IllegalArgumentException("maxFilesToDownload cannot be less than zero");
+			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: MaxFilesToDownload parameter cannot be less than zero");
 		}
 		this.maxFilesToDownload = (maxFilesToDownload == 0) ? Integer.MAX_VALUE : maxFilesToDownload;
 	}
@@ -276,9 +276,9 @@ public class DownloadParams {
 		try {
 			setUrlBase(new URL(url));
 		} catch (MalformedURLException e) {
-			throw new IllegalStateException("Wrong base URL: " + url);
+			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Wrong base URL: " + url);
 		} catch (Exception e) {
-			throw new IllegalStateException("Cannot create base URL: " + url);
+			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Cannot create base URL: " + url);
 		}
 	}
 }

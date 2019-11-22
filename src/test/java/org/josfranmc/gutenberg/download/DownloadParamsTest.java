@@ -18,11 +18,13 @@ public class DownloadParamsTest {
 		assertEquals("Valor Last-Modified incorrecto", p.getSavePath() + "zips" + System.getProperty("file.separator"), p.getZipsPath());
 	}
 	
-	@Test
-	public void maxDownloadasTest() {
+	@Test(expected=GutenbergException.class)
+	public void maxDownloadsTest() {
 		DownloadParams p = new DownloadParams();
 		p.setMaxFilesToDownload(0);
 		assertEquals("Valor Last-Modified incorrecto", Integer.MAX_VALUE, p.getMaxFilesToDownload());
+
+		p.setMaxFilesToDownload(-1);
 	}
 	
 	@Test
@@ -46,7 +48,7 @@ public class DownloadParamsTest {
 		assertFalse(p.isUnzip());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=GutenbergException.class)
 	public void delayExceptionTest() {
 		DownloadParams p = new DownloadParams();
 		p.setDelay(-1);
@@ -59,7 +61,7 @@ public class DownloadParamsTest {
 		assertEquals("Delay incorrecto", 5000, p.getDelay());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=GutenbergException.class)
 	public void fileTypeExceptionTest() {
 		DownloadParams p = new DownloadParams();
 		p.setFileType("doc");
