@@ -1,7 +1,29 @@
+/*
+ *  Copyright (C) 2018-2019 Jose Francisco Mena Ceca <josfranmc@gmail.com>
+ *
+ *  This file is part of JGutenbergDownload.
+ *
+ *  JGutenbergDownload is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  JGutenbergDownload is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with JGutenbergDownload.  If not, see <https://www.gnu.org/licenses/>.
+ *    
+ *  This file includes software developed at
+ *  The Apache Software Foundation (http://www.apache.org/). 
+ */ 
 package org.josfranmc.gutenberg.util;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,57 +37,55 @@ import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 
 /**
- * Ofrece herramientas para analizar ficheros en busca de enlaces web.
+ * Tools for searching web links in files.
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
  */
 public class FileScraping {
 	
 	private static final Logger log = Logger.getLogger(FileScraping.class);
 	
 	/**
-	 * Codificación del archivo a analizar
+	 * Coding of the file to analyze
 	 */
-	private static String ENCODING = "ISO-8859-1";
+	private static final Charset ENCODING = StandardCharsets.ISO_8859_1;
 	
 	/**
-	 * Patrón de la expresión regular a utilizar para detectar enlaces web
+	 * Regular expression pattern for detecting web links
 	 */
-	private static String PATTERN = ".*href=\"([^\"]*)\".*";
+	private static final String PATTERN = ".*href=\"([^\"]*)\".*";
 
 	
-	/**
-	 * Constructor por defecto.
-	 */
-	public FileScraping() {}
+	FileScraping() {
+		throw new IllegalStateException("Cannot instantiate class");
+	}
 	
 	/**
-	 * Obtiene una lista con todos los enlaces contenidos dentro de un fichero HTML.<br>
-	 * Los enlaces son extraidos de los atributos href de los elementos &lt;a&gt;.
-	 * @param filePath ruta del fichero a analizar
-	 * @return lista de enlaces
+	 * Returns a list with all links within an html file.<br>
+	 * The links are extracted from href attributes of <code>&lt;a&gt;</code> elements.
+	 * @param filePath path of file to analyze
+	 * @return a <code>List</code> element with links
 	 */
 	public static List<String> getLinks(String filePath) {
-		List<String> links = new ArrayList<String>();
+		List<String> links = new ArrayList<>();
 		if (filePath != null) {
 			Path path = Paths.get(filePath);
-	    	links = new ArrayList<String>();
-	    	try (Stream<String> stream = Files.lines(path, Charset.forName(ENCODING))) {
-	    		Pattern pattern = Pattern.compile(PATTERN);
-	    		Matcher matcher = null;
-	    		
-	    		Iterator<String> it = stream.iterator();
-	    		while (it.hasNext()) {
-	    			String line = it.next();
-	    			matcher = pattern.matcher(line);
-	    			if (matcher.matches()) {
-	    				links.add(matcher.group(1));
-	    			}
-	    		}
+			try (Stream<String> stream = Files.lines(path, ENCODING)) {
+				Pattern pattern = Pattern.compile(PATTERN);
+				Matcher matcher = null;
+
+				Iterator<String> it = stream.iterator();
+				while (it.hasNext()) {
+					String line = it.next();
+					matcher = pattern.matcher(line);
+					if (matcher.matches()) {
+						links.add(matcher.group(1));
+					}
+				}
 			} catch (IOException e) {
 				log.error(e);
 			}
-    	}
+		}
 		return links;		
 	}
 }

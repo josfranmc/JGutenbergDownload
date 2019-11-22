@@ -1,132 +1,168 @@
+/*
+ *  Copyright (C) 2018-2019 Jose Francisco Mena Ceca <josfranmc@gmail.com>
+ *
+ *  This file is part of JGutenbergDownload.
+ *
+ *  JGutenbergDownload is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  JGutenbergDownload is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with JGutenbergDownload.  If not, see <https://www.gnu.org/licenses/>.
+ *    
+ *  This file includes software developed at
+ *  The Apache Software Foundation (http://www.apache.org/). 
+ */ 
 package org.josfranmc.gutenberg.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
+import org.josfranmc.gutenberg.download.GutenbergException;
 
 /**
- * Ofrece herramientas para el tratamiento de ficheros.
+ * Tools for managing files.
  * @author Jose Francisco Mena Ceca
- * @version 1.0
+ * @version 2.0
  *
  */
 public class FileManager {
 
-	private final static Logger log = Logger.getLogger(FileManager.class);
+	private static final Logger log = Logger.getLogger(FileManager.class);
 	
-	private final static String FILE_SEPARATOR = System.getProperty("file.separator");
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	
+	
+	FileManager() {
+		throw new IllegalStateException("Cannot instantiate class");
+	}
 	
 	/**
-	 * Comprueba si existe en una ruta del equipo local el fichero que se puede obtener con la descarga de un determinado enlace.
-	 * @param savePath ruta del equipo local
-	 * @param link enlace del fichero
-	 * @return <i>true</i> si en la ruta indicada existe el fichero del enlace indicado, <i>false</i> en caso contrario
+	 * Checks if the file indicated by an url already exists in a local path.
+	 * @param localPath local path
+	 * @param url download url
+	 * @return <i>true</i> if the file indicated by the url exists in the local path, <i>false</i> otherwise
 	 */
-	public static boolean fileExists(String savePath, String link) {
-    	return new File(getLocalFilePathFromURL(savePath, link)).exists();
-    }
+	public static boolean fileExists(String localPath, String url) {
+		return new File(getLocalFilePathFromURL(localPath, url)).exists();
+	}
 	
 	/**
-	 * Devuelve la ruta que debe tener en el equipo local un fichero que va a descargarse en dicho equipo.<br>
-	 * La ruta completa del fichero se forma concatenando dos elementos: por un lado, la ruta de la carpeta donde se va a guardar, y por otro,
-	 * el nombre del fichero contenido en el enlace de descarga (el nombre de fichero es la parte final del enlace desde el último caracter separador de directorios)<br>.
-	 * Si el nombre del fichero contiene los caracteres ? o &amp;amp; se sustituyen por _ y &amp; respectivamente.
-	 * @param savePath ruta de la carpeta en la que obtener la descarga
-	 * @param link enlace del fichero a descargar
+	 * Returns the path a file must have when downloaded on the local machine.<br>
+	 * The path is formed by concatenating two elements: on the one hand, tha path of the folder where the download will be saved,
+	 * on the other hand, the name of the file in the download url (file name is at the end of the url, from last separator character of folders).<br>
+	 * If the name of the file contains <i>?</i> and <i>&amp;amp;</i> characters  are replaced by <i>_</i> and <i>&amp;</i> respectively.
+	 * @param savePath path of the folder in which to get the download
+	 * @param link download link
 	 * @return la ruta del fichero en el equipo local
 	 */
 	public static String getLocalFilePathFromURL(String savePath, String link) {
-		String path = (!savePath.endsWith(FileManager.FILE_SEPARATOR)) ? savePath.concat(FileManager.FILE_SEPARATOR) : savePath;
-		String fileName = link.substring(link.lastIndexOf("/")+1, link.length())
+		String path = (!savePath.endsWith(FILE_SEPARATOR)) ? savePath + FILE_SEPARATOR : savePath;
+		String fileName = link.substring(link.lastIndexOf('/')+1, link.length())
 				              .replace("?", "_")
 				              .replace("&amp;", "&");
 		return (path + fileName);
     }
 	
 	/**
-	 * Devuelve el nombre del archivo contenido en una ruta.
-	 * @param str ruta del archivo
-	 * @return el nombre del archivo
+	 * Returns the name of file inside a path.
+	 * @param str file path
+	 * @return the name of file inside <code>str</code> parameter
 	 */
 	public static String getLocalFileName(String str) {
-		return str.substring(str.lastIndexOf(FileManager.FILE_SEPARATOR)+1, str.length())
+		return str.substring(str.lastIndexOf(FILE_SEPARATOR)+1, str.length())
 	              .replace("?", "_")
 	              .replace("&amp;", "&");
 	}
 	
 	/**
-	 * Descomprime los ficheros comprimidos en formato zip de una determinada carpeta.
-	 * @param inputPath ruta del directorio donde se encuentran los ficheros zip
-	 * @param outputPath ruta del directorio en el que descomprimir los ficheros
+	 * Unzips files in format zip from a certain folder.
+	 * @param inputPath folder path with zip files
+	 * @param outputPath folder path where unzip files
 	 */
 	public static void unzipFiles(String inputPath, String outputPath) {
 		if (inputPath != null && outputPath != null) {
-			FileOutputStream fos = null;
-			String fileName = null;
-			byte[] buffer = new byte[1024];
-			int len = 0;
-			int index = -1;
-			if (!outputPath.endsWith(FILE_SEPARATOR)) {
-				outputPath = outputPath.concat(FILE_SEPARATOR);
-			}
-			List<String> zipFiles = getZipFiles(inputPath);
-			for (String zipFile : zipFiles) {
-				log.debug("Descomprimiendo " + zipFile);
-				try {
-					ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+			inputPath = checkAndFixPath(inputPath);
+			outputPath = checkAndFixPath(outputPath);
+			for (String zipFile : getZipFiles(inputPath)) {
+				try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
 					ZipEntry zipEntry = zis.getNextEntry();
-			        while (zipEntry != null) {
-			            fileName = zipEntry.getName();
-						if ((index = fileName.lastIndexOf("/")) != -1) {
-			            	fileName = fileName.substring(index+1);
-			            }
-			           	fos = new FileOutputStream(new File(outputPath.concat(fileName)));
-			            while ((len = zis.read(buffer)) > 0) {
-			                fos.write(buffer, 0, len);
-			            }
-			            fos.close();
-			            zipEntry = zis.getNextEntry();
+					while (zipEntry != null) {
+						String fileName = getFileName(zipEntry.getName());
+						if (!fileName.isEmpty()) {
+							String targetFile = outputPath + fileName;
+							extractFile(zis, targetFile);
+						}
+						zipEntry = zis.getNextEntry();
 			        }
-			        zis.closeEntry();
-			        zis.close();
-			        log.debug("Obtenido " + outputPath + fileName);
-				} catch (FileNotFoundException e) {
-					log.error(e);
-					log.error("OutputPath: " + outputPath + " FileName: " + fileName);
 				} catch (IOException e) {
-					log.error(e);
-					log.error("OutputPath: " + outputPath + " FileName: " + fileName);
-				}
+					log.error("IOException with zip file" + zipFile);
+				}	
 			}
 		} else {
 			log.warn("Rutas no válidas");
 		}
 	}
 	
+	private static String checkAndFixPath(String path) {
+		return (!path.endsWith(FILE_SEPARATOR)) ? (path + FILE_SEPARATOR) : path;
+	}
+	
 	/**
-	 * Devuelve una lista con las rutas de todos los ficheros con extensión .zip contenidos en un determinado directorio.
-	 * @param path ruta del directorio en el que buscar los ficheros
-	 * @return lista con las rutas de los ficheros
+	 * Returns a <code>List</code> with the paths of all existing files with <i>.zip</i> extension in a given folder.
+	 * @param path folder path where search files
+	 * @return a <code>List</code> with the files paths
 	 */
 	private static List<String> getZipFiles(String path) {
-		List<String> zipFiles = new ArrayList<String>();
-		File folder = new File(path);
-		if (folder.exists()) {
-			for (File file : folder.listFiles()) {
-				if (file.getName().endsWith(".zip")) {
-					zipFiles.add(file.getAbsolutePath());
-				}
+		List<String> zipFiles = new ArrayList<>();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(path), "*.zip")) {
+			for (Path file: stream) {
+				zipFiles.add(file.toString());
 			}
+		} catch (IOException e) {
+			log.error(e);
 		}
 		return zipFiles;
+	}
+	
+	private static String getFileName(String entryName) {
+		String fileName = entryName;
+		int index = -1;
+		if ((index = fileName.lastIndexOf('/')) != -1) {
+			fileName = fileName.substring(index+1);
+			if (fileName.contains("..")) {
+				throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Entry is trying to leave the target dir: " + entryName);
+			}
+		}
+		return fileName;
+	}
+	
+	private static void extractFile(ZipInputStream zis, String targetFile) {
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		try (FileOutputStream fos = new FileOutputStream(new File(targetFile))) {
+			while ((len = zis.read(buffer)) > 0) {
+				fos.write(buffer, 0, len);
+			}
+		} catch (IOException e) {
+			log.error("Error unzipping file " + targetFile);
+		}
 	}
 }

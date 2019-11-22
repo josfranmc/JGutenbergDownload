@@ -1,8 +1,27 @@
+/*
+ *  Copyright (C) 2018-2019 Jose Francisco Mena Ceca <josfranmc@gmail.com>
+ *
+ *  This file is part of JGutenbergDownload.
+ *
+ *  JGutenbergDownload is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  JGutenbergDownload is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with JGutenbergDownload.  If not, see <https://www.gnu.org/licenses/>.
+ *    
+ *  This file includes software developed at
+ *  The Apache Software Foundation (http://www.apache.org/). 
+ */
 package org.josfranmc.gutenberg.download;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,382 +31,316 @@ import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
 import org.josfranmc.gutenberg.util.FileManager;
 
 /**
- * Implementa el proceso y gestión de descarga de libros alojados por el proyecto Gutenberg (<a href="http://www.gutenberg.org/">http://www.gutenberg.org</a>)
+ * It allows to download books from the Gutenberg project repositories.<br>
+ * (<a href="http://www.gutenberg.org/">http://www.gutenberg.org</a>)
  * @author Jose Francisco Mena Ceca
- * @version 1.0
- * @see IGutenbergDownload
+ * @version 2.0
  * @see DownloadParams
- * @see DownloadMode
  * @see DownloadEngineType
+ * @see GutenbergException
  */
-public class JGutenbergDownload implements IGutenbergDownload{
+public class JGutenbergDownload {
 	
 	private static final Logger log = Logger.getLogger(JGutenbergDownload.class);
-	
-	/**
-	 * URL base del proyecto Gutenberg para realizar las descargas
-	 */
-	private static final String URL_BOOKS = "http://www.gutenberg.org/robot/";
-	
-	/**
-	 * Nombre de la carpeta dentro de la carpeta base donde guardar los ficheros zips descargados
-	 */
-	private static final String ZIP_DIRECTORY = "zips";
 
-	/**
-	 * Tipo de los ficheros a descargar
-	 */
-	private String fileType;
+	private DownloadParams parameters;	
+	
 	
 	/**
-	 * Idioma de los ficheros a descargar
-	 */
-	private String language;
-	
-	/**
-	 * Ruta base de la carpeta pasada por parámetro en la que realizar las descargas.
-	 * A lo largo del proceso de descarga la carpeta donde realizarlas puede variar. Esta variable guardar la carpeta inicial del proceso
-	 */
-	private String rootSavePath;
-
-	/**
-	 * Modo de realizar las descargas
-	 */
-	private AbstractDownload downloadMode = null;
-	
-	/**
-	 * Encapsula los parámetros de configuración a usar.  Recoge los parámetros pasados y es enviado a los componentes
-	 * encargados de realizar las descargas
-	 */
-	private DownloadParams parameters = null;
-	
-	/**
-	 * Constructor principal. Establece los parámetros de configuración que usa la apliación con valores por defecto. Concretamente:
-	 * <ul>
-	 * <li>Se establece como carpeta base de descarga la carpeta desde la que se ejecuta el programa</li>
-	 * <li>Se fija un tiempo de demora entre descargas de 2 segundos</li>
-	 * <li>Se establece que no se sobreescriban ficheros previamente descargados</li>
-	 * <li>Se establece que se descompriman los ficheros zips descargados</li>
-	 * <li>Se indica que se utilice un motor de descarga del tipo <i>DownloadEngineType.HTTP_CONNECTION</i></li>
-	 * <li>Se indica que las descargas se realicen usando un modo <i>DownloadMode.SOFT</i></li>
-	 * <li>Se indica que se descarguen todos los ficheros disponibles</li>
-	 * </ul>
+	 * Main constructor. It initializes the application with default values.
 	 * @see DownloadParams
-	 * @see DownloadEngineType
-	 * @see DownloadMode
 	 */
 	public JGutenbergDownload() {
 		parameters = new DownloadParams();
-		setSavePath(System.getProperty("user.dir"));
-		setDelay(2000);
-		setOverwrite(false);
-		setUnzip(true);
-		setEngineType(DownloadEngineType.HTTP_CONNECTION);
-		setMaxFilesToDownload(10);
-		setDownloadMode(DownloadMode.SOFT);
 	}
 
 	/**
-	 * Inicia el proceso de descarga de los libros.<br>
-	 * Crea una carpeta para guardar los zip descargados dentro de la carpeta indicada para almacenar descargar las descargas.
-	 * 
-	 * Se comprueba si se ha indicado el tipo de ficheros a descargar y el idioma de los mismos. 
-	 * Si no se se han indicado no se puede realizar la descarga.
-	 * @throws IllegalArgumentException si no se ha indicado tipo de fichero e idioma
-	 */
-	@Override
-	public void downloadBooks() {
-		if (isUrlParameters()) {
-			buildHarvestURL();
-			log.info("INICIO DESCARGA LIBROS " + getCurrentTime());
-			writeParamsLog();
-			download();
-			if (parameters.isUnzip()) {
-				unzipFiles();
-			}
-			log.info("FIN DESCARGA LIBROS " + getCurrentTime());
-		} else {
-			log.error("Es necesario indicar tipo de fichero e idioma");
-			throw new IllegalArgumentException("Es necesario indicar tipo de fichero e idioma");
-		}
-	}
-
-	/**
-	 * Construye la URL principal a partir de la cual realizar las descargas de los libros
-	 */
-	private void buildHarvestURL() {	
-		String queryParam = "harvest?filetypes[]=".concat(getFileType()).concat("&langs[]=").concat(getLanguage());
-		String url = URL_BOOKS.concat(queryParam);
-		try {
-			parameters.setUrlBase(new URL(url));
-		} catch (MalformedURLException e) {
-			log.warn("URL base errónea: " + url);
-		} catch (Exception e) {
-			log.error("Imposible inicializar URL base " + url);
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Lleva a cabo las descargas.<br>Primero crea dentro de la carpeta raíz de descargas una nueva carpeta en la que obtener los ficheros
-	 * comprimidos (esta nueva carpeta es la que se le pasa al motor de descargas para guardar los ficheros descargados).
-	 * Después se inicia el proceso de descargas pasándole los parámetros establecidos.
-	 */
-	private void download() {
-		// creamos carpeta para la descarga dentro de la carpeta raíz y la establecemos como parámetro
-		setSavePathParam(createDirectoryInRootPath(ZIP_DIRECTORY));
-		log.info("Descargando...");
-		downloadMode.executeDownload(parameters);	
-		// recuperamos la carpeta raíz de descargas como parámetro 
-		setSavePathParam(getRootSavePath());
-	}
-	
-	/**
-	 * Descomprime los ficheros zip obtenidos en una nueva carpeta dentro de la carpeta raíz de descargas.<br>
-	 */
-	private void unzipFiles() {
-		String zipPath = getRootSavePath().concat(ZIP_DIRECTORY);
-		String unZipPath = getRootSavePath();
-		log.info("DESCOMPRIMIR FICHEROS");
-		log.info("Ruta archivos zip: " + zipPath);
-		log.info("Ruta donde extraer: " + unZipPath);
-		log.info("Descomprimiendo... ");
-		FileManager.unzipFiles(zipPath, unZipPath);
-	}
-	
-	/**
-	 * Comprueba si se han establecido los parámetros de descarga de tipo de fichero e idioma
-	 * @return <i>true</i> si se han indicado ambos parámetros, <i>false</i> si alguno o ambos no se han indicado
-	 */
-	private boolean isUrlParameters() {
-		return (fileType != null && language != null && !fileType.isEmpty() && !language.isEmpty());
-	}
-	
-	/**
-	 * @return el modo de descarga utilizado
-	 */
-	@Override
-	public DownloadMode getDownloadMode() {
-		return downloadMode.getType();
-	}
-	
-	/**
-	 * Establece el mode de realizar las descargas
-	 * @see DownloadMode
-	 */
-	@Override
-	public void setDownloadMode(DownloadMode mode) {
-		if (mode == null) {
-			throw new IllegalArgumentException("El modo de descargar no puede ser null");
-		}
-		downloadMode = DownloadFactory.create(mode);
-	}
-
-	/**
-	 * Establece el tiempo de espera entre descargas, en milisegundos.
+	 * @return an object with the current parameters
 	 * @see DownloadParams
 	 */
-	@Override
-	public void setDelay(int delay) {
-		parameters.setDelay(delay);
+	public DownloadParams getParameters() {
+		return parameters;
 	}
 	
 	/**
-	 * Obtiene el tiempo de espera entre descargas establecido, en milisegundos.
-	 * @return el tiempo de espera entre descargas
+	 * Sets the application parameters through a <code>DownloadParams</code> object
+	 * @param parameters application parameters
+	 * @see DownloadParams
 	 */
-	@Override
-	public int getDelay() {
-		return parameters.getDelay();
+	public void setParameters(DownloadParams parameters) {
+		this.parameters = parameters;
 	}
 	
-	@Override
+	/**
+	 * Begins the process of downloading books.<p>
+	 * If there is any problem It can be thrown <code>GutenbergException</code>
+	 * @throws GutenbergException
+	 * @see GutenbergException
+	 */
+	public void downloadBooks() {
+		printParameters();
+		createDirectoriesForDownloads();
+		log.info("BEGIN BOOKS DOWNLOAD " + getCurrentTime());
+		DownloadBooks downloader = new DownloadBooks(parameters);
+		log.info("Downloading...");
+		downloader.executeDownload();
+		if (parameters.isUnzip()) {
+			log.info("Unzipping files... ");
+			FileManager.unzipFiles(parameters.getZipsPath(), parameters.getSavePath());
+		}
+		log.info("END BOOKS DOWNLOAD " + getCurrentTime());
+	}
+
+	private void createDirectoriesForDownloads() {
+		createBaseDirectory();
+		createZipsDirectory();
+	}
+	
+	private void createBaseDirectory() {
+		File dirPath = new File(parameters.getSavePath());
+		if (!dirPath.exists()) {
+			log.warn("Path doesn't exist. Creating new directory.");
+			dirPath.mkdirs();
+			if (!dirPath.exists()) {
+				throw new IllegalStateException("Cannot create directory for downloads");
+			}
+		}
+	}
+	
+	private void createZipsDirectory() {
+		File dirPath = new File(parameters.getZipsPath());
+		if (!dirPath.exists()) {
+			dirPath.mkdirs();
+			if (!dirPath.exists()) {
+				throw new IllegalStateException("Cannot create directory for zips");	
+			}
+		}
+	}
+
+	/**
+	 * @return the type of files to download
+	 */
+	public String getFileType() {
+		return parameters.getFileType();
+	}
+
+	/**
+	 * Sets the type of file to download. Valid types: txt, epub, html
+	 * @param fileType type of file to download
+	 * @throws IllegalArgumentException if an invalid file type is indicated
+	 */
+	public void setFileType(String fileType) {
+		parameters.setFileType(fileType);
+	}
+
+	/**
+	 * @return the language of files to download
+	 */
+	public String getLanguage() {
+		return parameters.getLanguage();
+	}
+
+	/**
+	 * Sets the language of the files to download acording to Gutenberg nomeclature.<br>
+	 * Ej.: <i>es</i> - spanish, <i>en</i> - english, <i>fr</i> - french
+	 * @param language type of language
+	 */
+	public void setLanguage(String language) {
+		parameters.setLanguage(language);
+	}
+	
+	/**
+	 * @return initial download url
+	 */
+	public String getUrlBase() {
+		return parameters.getUrlBase().toString();
+	}
+	
+	/**
+	 * @return folder path where to get downloaded resources
+	 */
+	public String getSavePath() {
+		return parameters.getSavePath();
+	}
+	
+	/**
+	 * Sets folder path where to get downloaded resources
+	 * @param savePath folder path where to get downloaded resources
+	 * @throws IllegalArgumentException if the parameter is null
+	 */
+	public void setSavePath(String savePath) {
+		parameters.setSavePath(savePath);
+	}
+	
+	/**
+	 * @return <i>true</i> if the existing files must be overwritten by the downloaded ones, <i>false</i> otherwise
+	 */
+	public boolean isOverwrite() {
+		return parameters.isOverwrite();
+	}
+	
+	/**
+	 * Sets if the existing files must be overwritten by the downloaded ones
+	 * @param value <i>true</i> if the existing files must be overwritten, <i>false</i> otherwise
+	 */
 	public void setOverwrite(boolean value) {
 		parameters.setOverwrite(value);
 	}
 	
-	@Override
-	public boolean isOverwrite() {
-		return parameters.isOverwrite();
-	}
-
-	@Override
-	public String getUrlBase() {
-		String url = null;
-		if (parameters.getUrlBase() != null) {
-			url = parameters.getUrlBase().toString();
-		} else {
-			url = "No se ha establecido URL.";
-		}
-		return url;
-	}
-
 	/**
-	 * @return la ruta base de la carpeta inicial en la que realizar las descargas
+	 * @return delay between downloads, in milliseconds
 	 */
-	private String getRootSavePath() {
-		return rootSavePath;
-	}
-
-	/**
-	 * Establece la ruta base de la carpeta en la que realizar las descargas. La carpeta indicada será la carpeta raiz del proceso
-	 * @param rootSavePath ruta de la carpeta
-	 */
-	private void setRootSavePath(String rootSavePath) {
-		this.rootSavePath = rootSavePath;
+	public int getDelay() {
+		return parameters.getDelay();
 	}
 	
 	/**
-	 * Establece la ruta de la carpeta en la que guardar los archivos descargados. Se añade el caracter separador de directorios a la final de la
-	 * ruta en caso de que no lo lleve.<br>Esta ruta se añade a los parámetros de la aplicación y se establece como ruta raiz del proceso.
-	 * @param savePath ruta de la carpeta
-	 * @throws IllegalArgumentException ruta errónea
+	 * Sets delay between downloads
+	 * @param delay waiting time, in milliseconds
 	 */
-	@Override
-	public void setSavePath(String savePath) {
-		if (savePath == null) {
-			throw new IllegalArgumentException("La ruta del directorio donde guardar las descargas no puede ser null");
-		}
-		File f = new File(savePath);
-		if (!f.exists()) {
-			log.warn("Ruta donde guardar las descargas inexistente. Creando nuevo directorio.");
-			f.mkdirs();
-			if (!f.exists()) {
-				throw new IllegalArgumentException("Imposible crear direcotrio para descargas");
-			}
-		}
-
-		String fileSeparator = System.getProperty("file.separator");
-		String path = (!savePath.endsWith(fileSeparator)) ? savePath.concat(fileSeparator) : savePath;
-		setSavePathParam(path);
-		setRootSavePath(path);
+	public void setDelay(int delay) {
+		parameters.setDelay(delay);
 	}
-	
+
 	/**
-	 * Asigna al objeto DownloadParams la ruta de una carpeta en la que guardar las descargas.
-	 * @param path ruta de la carpeta
-	 * @see DownloadParams
+	 * @return <i>true</i> if downloaded files must be unzipping, <i>false</i> otherwise
 	 */
-	private void setSavePathParam(String path) {
-		parameters.setSavePath(path);
-	}
-
-	@Override
-	public String getSavePath() {
-		return getRootSavePath();
-	}
-
-	@Override
 	public boolean isUnzip() {
 		return parameters.isUnzip();
 	}
 
-	@Override
+	/**
+	 * Sets if downloaded files must be unzipping,
+	 * @param value <i>true</i> if downloaded files must be unzipping, <i>false</i> otherwise
+	 */
 	public void setUnzip(boolean value) {
 		parameters.setUnzip(value);
 	}
-	
-	@Override
-	public String getFileType() {
-		return fileType;
-	}
-
-	@Override
-	public JGutenbergDownload setFileType(String fileType) {
-		this.fileType = fileType;
-		return this;
-	}
-
-	@Override
-	public String getLanguage() {
-		return language;
-	}
-
-	@Override
-	public JGutenbergDownload setLanguage(String language) {
-		this.language = language;
-		return this;
-	}
 
 	/**
-	 * @return el número máximo de ficheros a descargar
+	 * @return the maximum number of files to download
 	 */
-	@Override
 	public int getMaxFilesToDownload() {
 		return parameters.getMaxFilesToDownload();
 	}
 
 	/**
-	 * Establece el número máximo de ficheros a descargar
-	 * @param maxFilesToDownload número máximo de ficheros
-	 * @throws IllegalArgumentException si se indica un número inferior a cero
+	 * Sets the maximum number of files to download. The zero indicates downloading all available files.
+	 * @param maxFilesToDownload files number
+	 * @throws IllegalArgumentException if a number less than zero is indicated
 	 */
-	@Override
 	public void setMaxFilesToDownload(int maxFilesToDownload) {
-		if (maxFilesToDownload < 0) {
-			throw new IllegalArgumentException("maxFilesToDownload no puede ser inferior a cero");
-		}
 		parameters.setMaxFilesToDownload(maxFilesToDownload);
 	}
 	
 	/**
+	 * @return the type of downloading engine to use
 	 * @see DownloadEngineType
 	 */
-	@Override
 	public DownloadEngineType getEngineType() {
 		return parameters.getEngineType();
 	}
 
 	/**
-	 * Establece el tipo de motor a utilizar para realizar las descargas.<br>
-	 * Lo asigna al atributo que encapsula los parámetros de la aplicación
+	 * Sets the type of downloading engine to use
+	 * @param engineType engine type
 	 * @see DownloadEngineType
 	 */
-	@Override
 	public void setEngineType(DownloadEngineType engineType) {
 		parameters.setEngineType(engineType);
 	}
-	
-	/**
-	 * Crea un nuevo directorio dentro de la carpeta base especificada para guardar las descargas.
-	 * La carpeta creada se convierte en la nueva carpeta base. apuntada por el parámetro savePath y actualiza dicho parámetro
-	 * con la nueva ruta
-	 * @param nameDirectory nombre del directorio a crear
-	 */
-	private String createDirectoryInRootPath(String nameDirectory) {
-		String fileSeparator = System.getProperty("file.separator");
-		String savePath = getRootSavePath(); // parameters.getSavePath();
-		if (savePath != null) {
-			savePath = savePath.concat(nameDirectory).concat(fileSeparator);
-		} else {
-			savePath = System.getProperty("user.dir").concat(nameDirectory).concat(fileSeparator);
-		}
-		File dirPath = new File(savePath);
-		dirPath.mkdirs();
-		if (!dirPath.exists()) {
-			log.warn("Imposible crear ruta " + savePath);	
-			return null;
-		}
-		//parameters.setSavePath(savePath);
-		return savePath;
-	}
-	
+
 	private String getCurrentTime() {
 		Date date = new Date();
 		DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 		return hourFormat.format(date);
 	}
 	
-	private void writeParamsLog() {
-		log.info("Parámetros:");
-		log.info(" urlBase = " + parameters.getUrlBase().toString());
-		log.info(" savePath = " + parameters.getSavePath());
-		log.info(" overwrite = " + parameters.isOverwrite());
-		if (downloadMode.getType() == DownloadMode.SOFT) {
-			log.info(" delay = " + parameters.getDelay());
+	private void printParameters() {
+		log.info("PARAMETERS:");
+		log.info("  urlBase = " + parameters.getUrlBase().toString());
+		log.info("  savePath = " + parameters.getSavePath());
+		log.info("  overwrite = " + parameters.isOverwrite());
+		log.info("  delay = " + parameters.getDelay());
+		log.info("  unzip = " + parameters.isUnzip());
+		String max = (parameters.getMaxFilesToDownload() == 0) ? "all" : Integer.toString(parameters.getMaxFilesToDownload());
+		log.info("  maxDownloads = " + max);
+	}
+	
+	/**
+	 * Main method for running the application.
+	 * @param args list of arguments with application parameters
+	 */
+	public static void main(String [] args){
+		if (args.length == 0 || (args[0].equals("-h") || args[0].equals("-help"))) {
+			showHelp();
+		} else {
+			DownloadParams params = getParametersFromCommandLine(args);
+			JGutenbergDownload jg = new JGutenbergDownload();
+			jg.setParameters(params);				
+			jg.downloadBooks();
 		}
-		log.info(" unzip = " + parameters.isUnzip());
-		log.info(" engineType = " + parameters.getEngineType().toString());
-		log.info(" downloadType = " + downloadMode.getType());
+	}
+	
+	/**
+	 * Reads settings parameters from command line.<br>
+	 * Throws an Exception if there is any error.
+	 * @param args list of parameters obtained from the command line
+	 * @return a <code>DownloadParams</code> object.
+	 */
+	private static DownloadParams getParametersFromCommandLine(String [] args) {
+		DownloadParams params = new DownloadParams();
+		int i = 0;
+		int step = 0;
+		while (i < args.length) {
+			try {
+				if (args[i].startsWith("-f")) {
+					params.setFileType(args[i+1]);
+					step = 2;
+				} else if (args[i].equals("-l")) {
+					params.setLanguage(args[i+1]);
+					step = 2;
+				} else if (args[i].equals("-s")) {
+					params.setSavePath(args[i+1]);
+					step = 2;
+				} else if (args[i].equals("-d")) {
+					params.setDelay(Integer.parseInt(args[i+1]));
+					step = 2;
+				} else if (args[i].equals("-m")) {
+					params.setMaxFilesToDownload(Integer.parseInt(args[i+1]));
+					step = 2;
+				} else if (args[i].equals("-o")) {
+					params.setOverwrite(true);
+					step = 1;
+				} else if (args[i].equals("-z")) {
+					params.setUnzip(false);
+					step = 1;					
+				} else {
+					throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Parameter " + args[i]);
+				}
+			} catch (ArrayIndexOutOfBoundsException a) {
+				throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Parameter " + args[i]);
+			} catch (Exception e) {
+				throw e;
+			}
+			i+=step;
+		}
+		return params;
+	}
+	
+	private static void showHelp() {
+		log.info("");
+		log.info("Usage: java -jar JGutenbergDownload [options]");
+		log.info("Options:");
+		log.info("   -f xxx (xxx type of files to download, default: txt)");
+		log.info("   -l xx  (xx  language of books to download, default: es)");
+		log.info("   -s xxx (xxx download path on local machine, default: program folder)");
+		log.info("   -d xxx (xxx delay between downloads in milliseconds, default 2000)");
+		log.info("   -m xx  (xx  max number of downloads (default 10, 0 for dowload all)");
+		log.info("   -o     (    overwrite existing files, default: false)");
+		log.info("   -z     (    don't unzip downloads, default: true)");
+		log.info("");
+		log.info("(only -h to show options list)");
+		log.info("");
 	}
 }

@@ -1,31 +1,101 @@
 # JGutenbergDownload
-Descarga de ficheros desde los repositorios del proyecto Gutenberg.
+This software allows you to download books from the Gutenberg project repositories.  
 
-## Contenido
-+ jar-flat: fichero jar con las clases de la aplicación junto a las dependencias necesarias, que se ubican en la carpeta lib
-+ jar-shaded: fichero jar con las clases de la aplicación y con las dependencias necesarias incluidas en él
-+ javadoc: documentación del código
-+ src: Código fuente
+The Gutenberg project website is intended for human users only. If you want to download many books using an automated tool like this, keep in mind that your ip address can be blocked temporarily or permanently.  
+The Gutenberg project is a solidarity project based on the hard work of thousands of volunteers. So please, don't abuse.
 
-## Uso
-Desde línea de comandos:
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-java -jar JGutenbergDownload-1.0-shaded.jar [*opciones*]
+## Getting Started
 
-opciones:
+The project is a Maven project, so you can import it in your favorite IDE as any other Maven project.
 
--t tipo fichero (por defecto txt)  
--i idioma (por defecto en)  
--d tiempo de espera en milisegundos (por defecto 2000)  
--s ruta donde guardar las descargas  
--m total_ficheros_a_descargar (por defecto 10, el valor 0 descarga todo)  
--z descomprimir (true/false, por defecto true)  
--o sobreescribir existentes (true/false, por defecto false)  
--x modo de descarga (SOFT/GREEDY, por defecto SOFT)  
+~~~
+mvn install
+~~~
 
--h muestra lista de opciones
+will install the artifact in your local repository, being ready to be used as a dependency in any project:
 
-## Notas  
-Si se usa el jar flat hay que asegurarse que exista la carpeta lib dentro de la carpeta desde la que ejecutemos la aplicación.
+~~~
+<dependency>
+  <groupId>org.josfranmc.gutenberg</groupId>
+  <artifactId>JGutenbergDownload</artifactId>
+  <version>2.0</version>
+</dependency>
+~~~
 
-El fichero de log generado se guarda en la carpeta log.
+When you build the project with Maven you get two jars in the target directory: _JGutenbergDownload-2.0.jar_ and _JGutenbergDownload-2.0-shaded.jar_. The first one is the standard jar of the project. The second one is an _uber_ jar with all necessary dependencies, which is suitable to use from command line.    
+
+Download the latest _uber_ jar from [Releases](https://github.com/josfranmc/JGutenbergDownload/releases).
+
+## Usage
+
+The main class to use is `JGutenbergDownload`, which offers some methods to set up the download process.
+
+The following code will download 20 english books in a folder called _mybooks_:  
+
+~~~
+try {
+    JGutenbergDownload jg = new JGutenbergDownload();
+    jg.setLanguage("en");
+    jg.setSavePath("mybooks");
+    jg.setMaxFilesToDownload(20);
+    jg.downloadBooks();
+} catch(GutenbergException e) {
+    System.err.println(e.getMessage());
+}
+~~~
+
+You can also use the `DownloadParams` class to set up:  
+
+~~~
+try {
+    DownloadParams params = new DownloadParams();
+    params.setLanguage("en");
+    params.setSavePath("mybooks");
+    params.setMaxFilesToDownload(20);
+    
+    JGutenbergDownload jg = new JGutenbergDownload();
+    jg.setParameters(params);
+    jg.downloadBooks();
+} catch(GutenbergException e) {
+    System.err.println(e.getMessage());
+}
+~~~
+
+Finally, you can execute the `JGutenbergDownload`'s main method by passing the setting options as argument. The following code perfoms the same function as the previous ones:  
+
+~~~
+try {
+    String[] args = {"-l", "en", "-s", "mybooks", "-m", "20" };
+    JGutenbergDownload.main(args);
+} catch(GutenbergException e) {
+    System.err.println(e.getMessage());
+}
+~~~
+
+These are the options you can use as arguments:  
+
+~~~
+-f xxx (xxx type of files to download, default: txt)
+-l xx  (xx  language of books to download, default: es)
+-s xxx (xxx download path on local machine, default: program folder)
+-d xxx (xxx delay between downloads in milliseconds, default 2000)
+-m xx  (xx  max number of downloads (default 10, 0 for dowload all)
+-o     (    overwrite existing files, default: false)
+-z     (    don't unzip downloads, default: true)
+(only -h to show options list)");
+~~~
+
+---
+
+It is possible to run the program from the command line. To this purpose, you may use the _JGutenbergDownload-2.0-shaded.jar_ package with any of the options above:
+
+~~~
+java -jar JGutenbergDownload-2.0-shaded.jar -l en -s mybooks -m 20
+~~~
+
+## License
+
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0) or later, see
+[LICENSE](LICENSE) for more details.
