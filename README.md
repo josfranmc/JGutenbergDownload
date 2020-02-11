@@ -81,7 +81,7 @@ These are the options you can use as arguments:
 -l xx  (xx  language of books to download, default: es)
 -s xxx (xxx download path on local machine, default: program folder)
 -d xxx (xxx delay between downloads in milliseconds, default 2000)
--m xx  (xx  max number of downloads (default 10, 0 for dowload all)
+-m xx  (xx  max number of downloads (default 10, 0 for download all)
 -o     (    overwrite existing files, default: false)
 -z     (    don't unzip downloads, default: true)
 (only -h to show options list)");
