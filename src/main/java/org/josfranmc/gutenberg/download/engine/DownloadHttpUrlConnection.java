@@ -31,7 +31,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.UnknownHostException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.josfranmc.gutenberg.download.GutenbergException;
 import org.josfranmc.gutenberg.util.FileManager;
 
@@ -45,7 +46,7 @@ import org.josfranmc.gutenberg.util.FileManager;
  */
 public class DownloadHttpUrlConnection implements IDownloadEngine {
 	
-	private static final Logger log = Logger.getLogger(DownloadHttpUrlConnection.class);
+	private static final Logger log = LogManager.getLogger(DownloadHttpUrlConnection.class);
 	
 	/**
 	 * the url of the resource to download

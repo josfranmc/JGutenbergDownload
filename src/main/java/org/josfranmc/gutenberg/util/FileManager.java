@@ -34,7 +34,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.josfranmc.gutenberg.download.GutenbergException;
 
 /**
@@ -45,7 +46,7 @@ import org.josfranmc.gutenberg.download.GutenbergException;
  */
 public class FileManager {
 
-	private static final Logger log = Logger.getLogger(FileManager.class);
+	private static final Logger log = LogManager.getLogger(FileManager.class);
 	
 	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	

@@ -88,7 +88,7 @@ public class DownloadParams {
 		fileType = "txt";
 		language = "es";
 		buildHarvestURL();
-		savePath = System.getProperty("user.dir") + FILE_SEPARATOR;
+		savePath = System.getProperty("user.dir") + FILE_SEPARATOR + "books" + FILE_SEPARATOR;
 		setZipsPath();
 		overwrite = false;
 		delay = 2000;
