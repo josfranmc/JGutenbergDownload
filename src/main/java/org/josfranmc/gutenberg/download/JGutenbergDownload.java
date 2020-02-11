@@ -26,7 +26,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
 import org.josfranmc.gutenberg.util.FileManager;
 
@@ -41,7 +42,7 @@ import org.josfranmc.gutenberg.util.FileManager;
  */
 public class JGutenbergDownload {
 	
-	private static final Logger log = Logger.getLogger(JGutenbergDownload.class);
+	private static final Logger log = LogManager.getLogger(JGutenbergDownload.class);
 
 	private DownloadParams parameters;	
 	

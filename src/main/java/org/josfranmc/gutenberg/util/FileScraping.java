@@ -34,7 +34,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Tools for searching web links in files.
@@ -43,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 public class FileScraping {
 	
-	private static final Logger log = Logger.getLogger(FileScraping.class);
+	private static final Logger log = LogManager.getLogger(FileScraping.class);
 	
 	/**
 	 * Coding of the file to analyze
