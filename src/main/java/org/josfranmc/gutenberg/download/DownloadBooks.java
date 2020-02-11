@@ -28,7 +28,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.josfranmc.gutenberg.download.engine.DownloadEngineFactory;
 import org.josfranmc.gutenberg.download.engine.DownloadResult;
 import org.josfranmc.gutenberg.download.engine.IDownloadEngine;
@@ -44,7 +45,7 @@ import org.josfranmc.gutenberg.util.FileScraping;
  */
 public class DownloadBooks {
 
-	private static final Logger log = Logger.getLogger(DownloadBooks.class);
+	private static final Logger log = LogManager.getLogger(DownloadBooks.class);
 	
 	private ExecutorService executorService;
 	
