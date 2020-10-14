@@ -86,7 +86,7 @@ These are the options you can use as arguments:
 -m xx  (xx  max number of downloads (default 10, 0 for download all)
 -o     (    overwrite existing files, default: false)
 -z     (    don't unzip downloads, default: true)
-(only -h to show options list)");
+(only -h to show options list);
 ~~~
 
 ---
