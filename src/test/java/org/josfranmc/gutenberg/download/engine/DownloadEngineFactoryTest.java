@@ -6,10 +6,6 @@ import static org.junit.Assert.fail;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.josfranmc.gutenberg.download.engine.DownloadEngineFactory;
-import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
-import org.josfranmc.gutenberg.download.engine.DownloadHttpUrlConnection;
-import org.josfranmc.gutenberg.download.engine.IDownloadEngine;
 import org.junit.Test;
 
 public class DownloadEngineFactoryTest {
