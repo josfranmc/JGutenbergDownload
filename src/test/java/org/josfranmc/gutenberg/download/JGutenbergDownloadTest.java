@@ -29,7 +29,7 @@ public class JGutenbergDownloadTest {
 		assertEquals("Parámetro delay valor por defecto no válido", 2000, jg.getDelay());
 		assertEquals("Parámetro engineType valor por defecto no válido", DownloadEngineType.HTTP_CONNECTION, jg.getEngineType());
 		assertEquals("Parámetro maxFiles valor por defecto no válido", 10, jg.getMaxFilesToDownload());
-		assertEquals("Parámetro savePath valor por defecto no válido", System.getProperty("user.dir").concat(System.getProperty("file.separator")), jg.getSavePath());
+		assertEquals("Parámetro savePath valor por defecto no válido", System.getProperty("user.dir") + FILE_SEPARATOR + "books" + FILE_SEPARATOR, jg.getSavePath());
 		assertEquals("Parámetro urlBase valor por defecto no válido", "http://www.gutenberg.org/robot/harvest?filetypes[]=txt&langs[]=es", jg.getUrlBase());
 		assertEquals("Parámetro unzip valor por defecto no válido", true, jg.isUnzip());
 	}
@@ -72,9 +72,9 @@ public class JGutenbergDownloadTest {
 	public void savePathTest() {
 		JGutenbergDownload jg = new JGutenbergDownload();
 		jg.setSavePath("books");
-		assertEquals("Ruta no correcta [1]", "books".concat(System.getProperty("file.separator")), jg.getSavePath());
+		assertEquals("Ruta no correcta [1]", "books" + FILE_SEPARATOR, jg.getSavePath());
 		jg.setSavePath("temp\\");
-		assertEquals("Ruta no correcta [2]", "temp".concat(System.getProperty("file.separator")), jg.getSavePath());
+		assertEquals("Ruta no correcta [2]", "temp" + FILE_SEPARATOR, jg.getSavePath());
 	}
 	
 	@Test
