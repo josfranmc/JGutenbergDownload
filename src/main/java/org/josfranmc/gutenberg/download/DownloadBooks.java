@@ -79,7 +79,7 @@ public class DownloadBooks {
 		settingDownloadEngine();
 		
 		DownloadResult downloadResult = downloadEngine.download();
-		if (downloadResult.getContentType().equals("text/html")) {
+		if (downloadResult.getContentType().contains("text/html")) {
 
 			processPage(downloadResult.getSavedFilePath());
 		    

@@ -71,21 +71,42 @@ public class DownloadResult {
 	 * @return the value of the header field "Last-Modified"
 	 */
 	public String getLastModified() {
-		return (headers != null) ? headers.get("Last-Modified").get(0) : "";
+		String lastModified = "";
+		try {
+			lastModified = (headers != null) ? headers.get("Last-Modified").get(0) : "";
+		} catch (Exception e) {
+
+		}
+		
+		return lastModified;
 	}	
 	
 	/**
 	 * @return the value of the header field "Content-Type"
 	 */
 	public String getContentType() {
-		return (headers != null) ? headers.get("Content-Type").get(0) : "";
+		String contentType = "";
+		try {
+			contentType = (headers != null) ? headers.get("Content-Type").get(0) : "";
+		} catch (Exception e) {
+
+		}
+		
+		return contentType;
 	}	
 	
 	/**
 	 * @return the value of the header field "Content-Length"
 	 */
 	public String getContentLength() {
-		return (headers != null) ? headers.get("Content-Length").get(0) : "";
+		String contentLength = "";
+		try {
+			contentLength = (headers != null) ? headers.get("Content-Length").get(0) : "";
+		} catch (Exception e) {
+
+		}
+		
+		return contentLength;
 	}
 
 	/**
