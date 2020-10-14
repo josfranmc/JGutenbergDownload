@@ -25,8 +25,8 @@
   </developers>
 
   <properties>
-  	<jdk.target.version>1.8</jdk.target.version>
-  	<jdk.source.version>1.8</jdk.source.version>
+    <maven.compiler.source>1.11</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>  	
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <main.class>org.josfranmc.gutenberg.download.JGutenbergDownload</main.class>
   </properties>
@@ -68,8 +68,6 @@
         		<artifactId>maven-compiler-plugin</artifactId>
         		<version>3.6.1</version>
         		<configuration>
-          			<source>${jdk.source.version}</source>
-          			<target>${jdk.target.version}</target>
           			<failOnMissingWebXml>false</failOnMissingWebXml>
         		</configuration>
       		</plugin>
