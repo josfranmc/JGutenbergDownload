@@ -20,11 +20,11 @@ will install the artifact in your local repository, being ready to be used as a 
 <dependency>
   <groupId>org.josfranmc.gutenberg</groupId>
   <artifactId>JGutenbergDownload</artifactId>
-  <version>2.1</version>
+  <version>2.0.1</version>
 </dependency>
 ~~~
 
-When you build the project with Maven you get two jars in the target directory: _JGutenbergDownload-2.1.jar_ and _JGutenbergDownload-2.1-shaded.jar_. The first one is the standard jar of the project. The second one is an _uber_ jar with all necessary dependencies, which is suitable to use from command line.    
+When you build the project with Maven you get two jars in the target directory: _JGutenbergDownload-2.0.1.jar_ and _JGutenbergDownload-2.0.1-shaded.jar_. The first one is the standard jar of the project. The second one is an _uber_ jar with all necessary dependencies, which is suitable to use from command line.    
 
 Download the latest _uber_ jar from [Releases](https://github.com/josfranmc/JGutenbergDownload/releases).
 
@@ -91,7 +91,7 @@ These are the options you can use as arguments:
 
 ---
 
-It is possible to run the program from the command line. To this purpose, you may use the _JGutenbergDownload-2.0-shaded.jar_ package with any of the options above:
+It is possible to run the program from the command line. To this purpose, you may use the _JGutenbergDownload-2.0.1-shaded.jar_ package with any of the options above:
 
 ~~~
 java -jar JGutenbergDownload-2.1-shaded.jar -l en -s mybooks -m 20
