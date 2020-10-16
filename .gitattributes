@@ -1,3 +1,1 @@
-javadoc/* linguist-documentation
-*.java linguist-detectable=true
-*.html linguist-detectable=false
+javadoc/* linguist-vendored
