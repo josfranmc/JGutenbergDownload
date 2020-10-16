@@ -94,7 +94,7 @@ These are the options you can use as arguments:
 It is possible to run the program from the command line. To this purpose, you may use the _JGutenbergDownload-2.0.1-shaded.jar_ package with any of the options above:
 
 ~~~
-java -jar JGutenbergDownload-2.1-shaded.jar -l en -s mybooks -m 20
+java -jar JGutenbergDownload-2.0.1-shaded.jar -l en -s mybooks -m 20
 ~~~
 
 ## License
