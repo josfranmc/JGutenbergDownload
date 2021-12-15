@@ -37,7 +37,7 @@ import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
  * <li><b>engineType</b>: the type of downloading engine to use (default <code>DownloadEngineType.HTTP_CONNECTION</code>)</li>
  * </ul>
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.0.2
  * @see DownloadEngineType
  * @see JGutenbergDownload
  */
@@ -46,7 +46,7 @@ public class DownloadParams {
 	/**
 	 * Base URL of the Gutenberg project to download
 	 */
-	public static final String URL_BOOKS = "http://www.gutenberg.org/robot/";
+	public static final String URL_BOOKS = "https://www.gutenberg.org/robot/";
 	
 	private static final String FILE_SEPARATOR = System.getProperty("file.separator"); 
 	
