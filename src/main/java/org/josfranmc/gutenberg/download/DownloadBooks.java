@@ -39,7 +39,7 @@ import org.josfranmc.gutenberg.util.FileScraping;
 /**
  * Allows to perform the file download process.
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  * @see JGutenbergDownload
  * @see DownloadParams
  */
@@ -74,15 +74,16 @@ public class DownloadBooks {
 	 * This process continues until there are no more pages.<p>
 	 * All downloads run on separate threads.
 	 */
-	public void executeDownload() {
+	public boolean executeDownload() {
+		boolean result = true;
 		
 		settingDownloadEngine();
 		
+		log.info("Downloading...");
 		DownloadResult downloadResult = downloadEngine.download();
-		if (downloadResult.getContentType().contains("text/html")) {
-
+		
+		if (isPageWithBookLinks(downloadResult)) { 
 			processPage(downloadResult.getSavedFilePath());
-		    
 			try {
 		    	executorService.shutdown();
 				while (!executorService.awaitTermination(2, TimeUnit.MINUTES)) {}
@@ -90,9 +91,27 @@ public class DownloadBooks {
 				log.warn("InterruptedException shutting down executorService. " + e.getMessage());
 				Thread.currentThread().interrupt();
 			}	
+		} else {
+			log.info("No links to download");
+			return result = false;
 		}
+		return result;
 	}
 
+	/**
+	 * @param downloadResult
+	 * @return <i>true</i> if the downloaded file contains links to books, <i>false</i> otherwise
+	 */
+	private boolean isPageWithBookLinks(DownloadResult downloadResult) {
+		boolean result =false;
+		if (downloadResult.getContentType().contains("text/html") &&
+			downloadResult.getContentLocation().contains("harvest.php") )
+		{
+			result = true;
+		}
+		return result;
+	}
+	
 	/**
 	 * It process a file with links that are the urls to the books to download. Existing links are extracted and then downloaded.<br>
 	 * The last link could be the link to another page with more links. If so, we process the new file calling this method again.
@@ -108,7 +127,7 @@ public class DownloadBooks {
 				} catch (MalformedURLException e) {
 					try {
 						DownloadResult downloadResult = getNewPageWithBookLinks(link);
-						if (downloadResult.getContentType().equals("text/html")) {
+						if (isPageWithBookLinks(downloadResult)) {
 							processPage(downloadResult.getSavedFilePath());
 						}
 					} catch (MalformedURLException ex) {

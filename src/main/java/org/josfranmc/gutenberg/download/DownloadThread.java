@@ -27,7 +27,7 @@ import org.josfranmc.gutenberg.download.engine.IDownloadEngine;
  * Downloads a resource.<br>
  * Objects of this class can be runned in separate threads.
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  */
 public class DownloadThread implements Runnable {
 

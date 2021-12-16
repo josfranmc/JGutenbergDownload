@@ -12,5 +12,6 @@ public class DownloadResultTest {
 		assertEquals("Valor Last-Modified incorrecto", "", r.getLastModified());
 		assertEquals("Valor Content-Type incorrecto", "", r.getContentType());
 		assertEquals("Valor Content-Length incorrecto", "", r.getContentLength());
+		assertEquals("Valor Content-Location incorrecto", "", r.getContentLocation());
 	}
 }

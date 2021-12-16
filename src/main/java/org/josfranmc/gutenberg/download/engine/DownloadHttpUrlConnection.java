@@ -40,7 +40,7 @@ import org.josfranmc.gutenberg.util.FileManager;
  * Allows to download a resource identified by an url and save it in a local folder.<br>
  * It makes use of the <code>java.net.HttpURLConnection</code> class for downloading.<br>
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  * @see IDownloadEngine
  * @see GutenbergException
  */
@@ -130,8 +130,8 @@ public class DownloadHttpUrlConnection implements IDownloadEngine {
 					downloadResult.setHeaders(httpConnection);
 					downloadResult.setSavedFilePath(outputFilePath);	            
 				}
-				log.debug("Descargado \"" + FileManager.getLocalFileName(outputFilePath) + "\" en " + getSavePath());
-				log.debug("Tipo: " + downloadResult.getContentType() + "  Longitud: " + downloadResult.getContentLength());
+				log.debug("[DEBUG] Descargado \"" + FileManager.getLocalFileName(outputFilePath) + "\" en " + getSavePath());
+				log.debug("[DEBUG] Tipo: " + downloadResult.getContentType() + "  Longitud: " + downloadResult.getContentLength());
 
 			} catch (ConnectException e) {
 				log.warn("Download timeout exceeded");

@@ -7,6 +7,11 @@ import static org.junit.Assert.assertTrue;
 import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
 import org.junit.Test;
 
+/**
+ * Clase que implementa los test para probar los métodos de la clase DownloadParams
+ * @author Jose Francisco Mena Ceca
+ * @version 2.1
+ */
 public class DownloadParamsTest {
 	
 	@Test
@@ -65,5 +70,11 @@ public class DownloadParamsTest {
 	public void fileTypeExceptionTest() {
 		DownloadParams p = new DownloadParams();
 		p.setFileType("doc");
+	}
+	
+	@Test(expected=GutenbergException.class)
+	public void urlExceptionTest() {
+		DownloadParams p = new DownloadParams();
+		p.setUrl("fail://www.never.com");
 	}
 }

@@ -37,7 +37,7 @@ import org.josfranmc.gutenberg.download.engine.DownloadEngineType;
  * <li><b>engineType</b>: the type of downloading engine to use (default <code>DownloadEngineType.HTTP_CONNECTION</code>)</li>
  * </ul>
  * @author Jose Francisco Mena Ceca
- * @version 2.0.2
+ * @version 2.1
  * @see DownloadEngineType
  * @see JGutenbergDownload
  */
@@ -150,6 +150,14 @@ public class DownloadParams {
 		this.urlBase = urlBase;
 	}
 
+	/**
+	 * Sets initial download url
+	 * @param urlBase url address
+	 */
+	public void setUrl(String url) {
+		buildHarvestURL(url);
+	}
+	
 	/**
 	 * @return folder path where to get downloaded resources
 	 */
@@ -271,14 +279,17 @@ public class DownloadParams {
 	 * Build the main url from which to download the books
 	 */
 	private void buildHarvestURL() {	
+		buildHarvestURL(URL_BOOKS);
+	}
+	
+	private void buildHarvestURL(String url) {	
 		String queryParams = "harvest?filetypes[]=" + getFileType() + "&langs[]=" + getLanguage();
-		String url = URL_BOOKS + queryParams;
 		try {
-			setUrlBase(new URL(url));
+			setUrlBase(new URL(url + queryParams));
 		} catch (MalformedURLException e) {
 			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Wrong base URL: " + url);
 		} catch (Exception e) {
 			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Cannot create base URL: " + url);
 		}
-	}
+	}	
 }

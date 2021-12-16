@@ -26,7 +26,7 @@ import java.util.Map;
  * It encapsulates the result of downloading a resource. This class serves to save together different data related to the download:
  * the header returned in the connection and the name of the file created, along with its path.
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  */
 public class DownloadResult {
 
@@ -77,7 +77,6 @@ public class DownloadResult {
 		} catch (Exception e) {
 
 		}
-		
 		return lastModified;
 	}	
 	
@@ -91,7 +90,6 @@ public class DownloadResult {
 		} catch (Exception e) {
 
 		}
-		
 		return contentType;
 	}	
 	
@@ -105,10 +103,22 @@ public class DownloadResult {
 		} catch (Exception e) {
 
 		}
-		
 		return contentLength;
 	}
 
+	/**
+	 * @return the value of the header field "Content-Location"
+	 */
+	public String getContentLocation() {
+		String contentLocation = "";
+		try {
+			contentLocation = (headers != null) ? headers.get("Content-Location").get(0) : "";
+		} catch (Exception e) {
+
+		}
+		return contentLocation;
+	}
+	
 	/**
 	 * Sets the path of the downloaded file on the local machine.
 	 * @param fileOutputPath path of the downloaded file

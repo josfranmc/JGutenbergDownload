@@ -35,7 +35,7 @@ import org.josfranmc.gutenberg.util.FileManager;
  * It allows to download books from the Gutenberg project repositories.<br>
  * (<a href="http://www.gutenberg.org/">http://www.gutenberg.org</a>)
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  * @see DownloadParams
  * @see DownloadEngineType
  * @see GutenbergException
@@ -83,9 +83,8 @@ public class JGutenbergDownload {
 		createDirectoriesForDownloads();
 		log.info("BEGIN BOOKS DOWNLOAD " + getCurrentTime());
 		DownloadBooks downloader = new DownloadBooks(parameters);
-		log.info("Downloading...");
-		downloader.executeDownload();
-		if (parameters.isUnzip()) {
+		boolean downloaded = downloader.executeDownload();
+		if (downloaded && parameters.isUnzip()) {
 			log.info("Unzipping files... ");
 			FileManager.unzipFiles(parameters.getZipsPath(), parameters.getSavePath());
 		}
@@ -100,7 +99,7 @@ public class JGutenbergDownload {
 	private void createBaseDirectory() {
 		File dirPath = new File(parameters.getSavePath());
 		if (!dirPath.exists()) {
-			log.warn("Path doesn't exist. Creating new directory.");
+			log.warn("[WARN] Path doesn't exist. Creating new directory.");
 			dirPath.mkdirs();
 			if (!dirPath.exists()) {
 				throw new IllegalStateException("Cannot create directory for downloads");

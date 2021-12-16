@@ -4,7 +4,7 @@
 
   <groupId>org.josfranmc.gutenberg</groupId>
   <artifactId>JGutenbergDownload</artifactId>
-  <version>2.0.2</version>
+  <version>2.1</version>
   <packaging>jar</packaging>
 
   <name>JGutenbergDownload</name>
@@ -93,6 +93,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.2.0</version>
             <executions>
                 <execution>
                     <id>copy</id>
@@ -111,7 +112,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.4</version>
             <executions>
                 <execution>
                     <phase>package</phase>
@@ -133,7 +134,7 @@
         <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.5</version>
+            <version>0.8.7</version>
             <executions>
                 <execution>
                     <goals>
@@ -147,6 +148,26 @@
                         <goal>report</goal>
                     </goals>
                 </execution>
+<!--                 <execution> -->
+<!--                     <id>jacoco-check</id> -->
+<!--                     <goals> -->
+<!--                         <goal>check</goal> -->
+<!--                     </goals>                     -->
+<!--                     <configuration> -->
+<!--                         <rules> -->
+<!--                             <rule> -->
+<!--                                 <element>PACKAGE</element> -->
+<!--                                 <limits> -->
+<!--                                     <limit> -->
+<!--                                         <counter>LINE</counter> -->
+<!--                                         <value>COVEREDRATIO</value> -->
+<!--                                         <minimum>0.70</minimum> -->
+<!--                                     </limit> -->
+<!--                                 </limits> -->
+<!--                             </rule> -->
+<!--                         </rules> -->
+<!--                     </configuration> -->
+<!--                 </execution>                 -->
             </executions>
         </plugin>      		
     </plugins>     

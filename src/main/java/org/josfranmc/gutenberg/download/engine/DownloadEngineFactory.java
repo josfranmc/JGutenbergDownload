@@ -29,7 +29,7 @@ import java.net.URL;
  * <li><i>type</i>: engine type for downloading (for default <code>DownloadEngineType.HTTTP_CONNECTION</code> is used)</li>
  * </ul>
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  */
 public class DownloadEngineFactory {
 

@@ -41,7 +41,7 @@ import org.josfranmc.gutenberg.download.GutenbergException;
 /**
  * Tools for managing files.
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  *
  */
 public class FileManager {

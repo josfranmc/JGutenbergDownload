@@ -25,7 +25,7 @@ import org.josfranmc.gutenberg.download.GutenbergException;
 /**
  * Defines the behavior that a class have to implement in order to have the ability to download resources on net.
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  * @see IDownloadEngine
  * @see GutenbergException
  */

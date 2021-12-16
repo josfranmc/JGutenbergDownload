@@ -12,7 +12,7 @@ import org.junit.Test;
 /**
  * Clase que implementa los test para probar los métodos de la clase JGutenbergDownload
  * @author Jose Francisco Mena Ceca
- * @version 2.0
+ * @version 2.1
  */
 public class JGutenbergDownloadTest {
 
@@ -30,8 +30,9 @@ public class JGutenbergDownloadTest {
 		assertEquals("Parámetro engineType valor por defecto no válido", DownloadEngineType.HTTP_CONNECTION, jg.getEngineType());
 		assertEquals("Parámetro maxFiles valor por defecto no válido", 10, jg.getMaxFilesToDownload());
 		assertEquals("Parámetro savePath valor por defecto no válido", System.getProperty("user.dir") + FILE_SEPARATOR + "books" + FILE_SEPARATOR, jg.getSavePath());
-		assertEquals("Parámetro urlBase valor por defecto no válido", "http://www.gutenberg.org/robot/harvest?filetypes[]=txt&langs[]=es", jg.getUrlBase());
+		assertEquals("Parámetro urlBase valor por defecto no válido", "https://www.gutenberg.org/robot/harvest?filetypes[]=txt&langs[]=es", jg.getUrlBase());
 		assertEquals("Parámetro unzip valor por defecto no válido", true, jg.isUnzip());
+		assertEquals("Parámetro unzip valor por defecto no válido", false, jg.isOverwrite());
 	}
 	
 
@@ -114,35 +115,9 @@ public class JGutenbergDownloadTest {
 		deleteDownloadedFiles(jg);
 	}
 	
-	private void deleteDownloadedFiles(JGutenbergDownload jg) {
-		String saveDir = jg.getSavePath();
-		String pageWithLinks = "harvest_filetypes[]=" + jg.getFileType() + "&langs[]=" + jg.getLanguage();
-		
-		File page = new File(saveDir + "zips" + FILE_SEPARATOR + pageWithLinks);
-		assertTrue(page.exists());
-		
-		File dirZip = new File(saveDir + "zips");
-		File[] filesInZipDirectory = dirZip.listFiles();
-		for(File f : filesInZipDirectory) {
-			if(f.exists()) {
-				f.delete();
-			}
-		}
-		dirZip.delete();
-		
-		File dirSave = new File(saveDir);
-		File[] filesInSaveDirectory = dirSave.listFiles();
-		for(File f : filesInSaveDirectory) {
-			if(f.exists()) {
-				f.delete();
-			}
-		}
-		dirSave.delete();
-	}
-	
 	@Test
 	public void downloadOneBookWithMainMethodTest() {
-		String [] args = {"-d", "0", "-m", "1", "-s", "testdownload2"};
+		String [] args = {"-o", "-z", "-d", "0", "-m", "1", "-s", "testdownload2"};
 		
 		JGutenbergDownload.main(args); 
 		
@@ -159,13 +134,23 @@ public class JGutenbergDownloadTest {
 	
 	@Test(expected=GutenbergException.class)
 	public void wrongParameterskWithMainMethodTest() {
-		String [] args = {"-d", "0", "-w", "1", "-s", "testdownload3"};
+		String [] args = {"-f", "html","-d", "0", "-l", "en", "-w", "1", "-s", "testdownload3"};
 		
 		JGutenbergDownload.main(args); 
 		
 		File dirSave = new File("testdownload3");
 		assertTrue(!dirSave.exists());
 	}
+	/*
+	@Test(expected=GutenbergException.class)
+	public void overwriteParameterWithMainMethodTest() {
+		String [] args = {"-d", "0", "-o", "true", "-s", "testdownload6"};
+		
+		JGutenbergDownload.main(args); 
+		
+		File dirSave = new File("testdownload6");
+		assertTrue(!dirSave.exists());
+	}	*/
 	
 	@Test
 	public void downloadTwoPagesTest() {
@@ -193,6 +178,52 @@ public class JGutenbergDownloadTest {
 		
 		deleteDownloadedFiles(jg);
 	}
+
+	@Test
+	public void pageWithNoLinksTest() {
+		DownloadParams dp = new DownloadParams();
+		dp.setDelay(0);
+		dp.setMaxFilesToDownload(1);
+		dp.setUnzip(true);
+		dp.setUrl("http://www.gutenberg.org/robot/");
+			
+		JGutenbergDownload jg = new JGutenbergDownload();
+		jg.setParameters(dp);
+		jg.downloadBooks();	
+		
+		File dir = new File(jg.getSavePath());
+		assertEquals("Número de archivos descargados incorrectos [4]", 1, dir.listFiles().length);
+		
+		deleteDownloadedFiles(jg);
+	}
+	
+	@Test
+	public void downloadWithDelayTest() {
+		JGutenbergDownload jg = new JGutenbergDownload();
+		jg.setSavePath("testdownload4");
+		jg.setDelay(1000);
+		jg.setMaxFilesToDownload(2);
+		jg.downloadBooks();
+		
+		File dirZip = new File(jg.getSavePath() + "zips");
+		assertEquals("Número de archivos descargados incorrectos [5]", 3, dirZip.listFiles().length);
+		
+		deleteDownloadedFiles(jg);
+	}	
+	
+	@Test
+	public void overWriteTest() {
+		JGutenbergDownload jg = new JGutenbergDownload();
+		jg.setSavePath("testdownload4");
+		jg.setDelay(1000);
+		jg.setMaxFilesToDownload(2);
+		jg.downloadBooks();
+		
+		File dirZip = new File(jg.getSavePath() + "zips");
+		assertEquals("Número de archivos descargados incorrectos [5]", 3, dirZip.listFiles().length);
+		
+		deleteDownloadedFiles(jg);
+	}		
 	
 	@Test
 	public void showHelpWithMainMethodTest() {
@@ -204,7 +235,7 @@ public class JGutenbergDownloadTest {
 	@Test(expected=GutenbergException.class)
 	public void wrongUrlTest() {
 		JGutenbergDownload jg = new JGutenbergDownload();
-		jg.setSavePath("testdownload4");
+		jg.setSavePath("testdownload5");
 		jg.setLanguage("http://");
 		jg.setDelay(0);
 		jg.setUnzip(false);
@@ -219,4 +250,30 @@ public class JGutenbergDownloadTest {
 			throw e;
 		}
 	}
+	
+	private void deleteDownloadedFiles(JGutenbergDownload jg) {
+		String saveDir = jg.getSavePath();
+		String pageWithLinks = "harvest_filetypes[]=" + jg.getFileType() + "&langs[]=" + jg.getLanguage();
+		
+		File page = new File(saveDir + "zips" + FILE_SEPARATOR + pageWithLinks);
+		assertTrue(page.exists());
+		
+		File dirZip = new File(saveDir + "zips");
+		File[] filesInZipDirectory = dirZip.listFiles();
+		for(File f : filesInZipDirectory) {
+			if(f.exists()) {
+				f.delete();
+			}
+		}
+		dirZip.delete();
+		
+		File dirSave = new File(saveDir);
+		File[] filesInSaveDirectory = dirSave.listFiles();
+		for(File f : filesInSaveDirectory) {
+			if(f.exists()) {
+				f.delete();
+			}
+		}
+		dirSave.delete();
+	}	
 }
