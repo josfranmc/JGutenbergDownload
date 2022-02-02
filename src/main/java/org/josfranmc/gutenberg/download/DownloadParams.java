@@ -112,7 +112,7 @@ public class DownloadParams {
 	 */
 	public void setFileType(String fileType) {
 		if (!fileType.equals("txt") && !fileType.equals("epub") && !fileType.equals("html")) {
-			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Wrong file type parameter");
+			throw new GutenbergException("org.josfranmc.gutenberg.download.GutenbergException: Wrong file type parameter");
 		}
 		this.fileType = fileType;
 		buildHarvestURL();
@@ -172,7 +172,7 @@ public class DownloadParams {
 	 */
 	public void setSavePath(String savePath) {
 		if (savePath == null) {
-			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: The directory path where to save downloads cannot be null");
+			throw new GutenbergException("org.josfranmc.gutenberg.download.GutenbergException: The directory path where to save downloads cannot be null");
 		}
 		String path = (!savePath.endsWith(FILE_SEPARATOR)) ? savePath.concat(FILE_SEPARATOR) : savePath;
 		this.savePath = path;
@@ -219,7 +219,7 @@ public class DownloadParams {
 	 */
 	public void setDelay(int delay) {
 		if (delay < 0) {
-			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Delay parameter cannot be less than zero");
+			throw new GutenbergException("org.josfranmc.gutenberg.download.GutenbergException: Delay parameter cannot be less than zero");
 		}
 		this.delay = delay;
 	}
@@ -253,7 +253,7 @@ public class DownloadParams {
 	 */
 	public void setMaxFilesToDownload(int maxFilesToDownload) {
 		if (maxFilesToDownload < 0) {
-			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: MaxFilesToDownload parameter cannot be less than zero");
+			throw new GutenbergException("org.josfranmc.gutenberg.download.GutenbergException: MaxFilesToDownload parameter cannot be less than zero");
 		}
 		this.maxFilesToDownload = (maxFilesToDownload == 0) ? Integer.MAX_VALUE : maxFilesToDownload;
 	}
@@ -287,9 +287,9 @@ public class DownloadParams {
 		try {
 			setUrlBase(new URL(url + queryParams));
 		} catch (MalformedURLException e) {
-			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Wrong base URL: " + url);
+			throw new GutenbergException("org.josfranmc.gutenberg.download.GutenbergException: Wrong base URL: " + url);
 		} catch (Exception e) {
-			throw new GutenbergException("org.josfranmc.gutenberg.GutenbergException: Cannot create base URL: " + url);
+			throw new GutenbergException("org.josfranmc.gutenberg.download.GutenbergException: Cannot create base URL: " + url);
 		}
 	}	
 }

@@ -103,7 +103,7 @@ public class DownloadBooks {
 	 * @return <i>true</i> if the downloaded file contains links to books, <i>false</i> otherwise
 	 */
 	private boolean isPageWithBookLinks(DownloadResult downloadResult) {
-		boolean result =false;
+		boolean result = false;
 		if (downloadResult.getContentType().contains("text/html") &&
 			downloadResult.getContentLocation().contains("harvest.php") )
 		{
